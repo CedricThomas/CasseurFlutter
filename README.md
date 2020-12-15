@@ -1,4 +1,4 @@
-# casseur_flutter
+# casseurflutter
 
 A note application
 
