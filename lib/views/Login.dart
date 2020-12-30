@@ -1,5 +1,11 @@
 import 'dart:developer';
 
+import 'package:casseurflutter/redux/actions.dart';
+import 'package:casseurflutter/redux/actions/setIsAuthenticated.dart';
+import 'package:casseurflutter/redux/actions/setProfile.dart';
+import 'package:casseurflutter/redux/reducer.dart';
+import 'package:casseurflutter/utils/token.dart';
+import 'package:casseurflutter/widgets/scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -39,23 +45,19 @@ class _LoginState extends State<Login> {
         ),
       );
 
-      log("login received");
-      log(result.toString());
-      log(result.refreshToken);
-      log(result.idToken);
-
-      // final idToken = parseIdToken(result.idToken);
-      // final profile = await getUserDetails(result.accessToken);
-
       await secureStorage.write(
           key: 'id_token', value: result.idToken);
       await secureStorage.write(
           key: 'refresh_token', value: result.refreshToken);
 
+      var parsedIdToken = parseIdToken(result.idToken);
+      var profile = extractUserInfo(parsedIdToken);
+      dispatch(AppActions.setIsAuthenticated, SetIsAuthenticatedData(isAuthenticated: true));
+      dispatch(AppActions.setProfile, SetProfileData(profile: profile));
       setState(() {
         isBusy = false;
       });
-      Navigator.pushNamed(context, Memos.id);
+      Navigator.pushReplacementNamed(context, Memos.id);
     } catch (e, s) {
       setState(() {
         isBusy = false;
@@ -66,31 +68,33 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text(
-          "You must log yourself in order to use CasseurFlutter",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontWeight: FontWeight.normal,
-            color: Colors.black,
-            decoration: TextDecoration.none,
-            fontSize: 16,
-            fontFamily: 'Roboto'
+    return AppScaffold(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            "You must log yourself in order to use CasseurFlutter",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.normal,
+              color: Colors.black,
+              decoration: TextDecoration.none,
+              fontSize: 16,
+              fontFamily: 'Roboto'
+            ),
           ),
-        ),
-        Container(
-          height: 40,
-        ),
-        ElevatedButton(
-          onPressed: () {
-            loginAction();
-          },
-          child: Text('Login'),
-        ),
-        Text(errorMessage ?? ''),
-      ],
+          Container(
+            height: 40,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              loginAction();
+            },
+            child: Text('Login'),
+          ),
+          Text(errorMessage ?? ''),
+        ],
+      ),
     );
   }
 }

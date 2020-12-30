@@ -1,4 +1,5 @@
 import 'package:casseurflutter/views/Home.dart';
+import 'package:casseurflutter/widgets/scaffold.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -33,8 +34,10 @@ class Initializer extends StatelessWidget {
             ),
           );
         }
-        return Center(
-          child: CircularProgressIndicator(),
+        return AppScaffold(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
         );
       },
     );

@@ -8,20 +8,15 @@ import 'package:redux/redux.dart';
 import 'redux/store.dart';
 import 'views/Home.dart';
 import 'views/Login.dart';
+import 'views/Logout.dart';
 import 'views/Memos.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp(
-    store: store,
-  ));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final Store<AppState> store;
-
-  MyApp({Key key, this.store}) : super(key: key);
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -53,27 +48,9 @@ class MyApp extends StatelessWidget {
           Initializer.id: (context) => Initializer(),
           Home.id: (context) => Home(),
           Login.id: (context) => Login(),
+          Logout.id: (context) => Logout(),
           Memos.id: (context) => Memos(),
         },
-        builder: (context, child) => Scaffold(
-          drawer: Drawer(
-            child: AppDrawer(),
-          ),
-          appBar: AppBar(
-            leading: Builder(
-              builder: (BuildContext context) {
-                return IconButton(
-                  icon: const Icon(Icons.menu),
-                  onPressed: () {
-                    Scaffold.of(context).openDrawer();
-                  },
-                );
-              },
-            ),
-            title: Text("Casseur Flutter"),
-          ),
-          body: child,
-        ),
       ),
     );
   }

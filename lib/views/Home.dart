@@ -2,8 +2,12 @@ import 'dart:convert';
 
 import 'package:casseurflutter/redux/actions.dart';
 import 'package:casseurflutter/redux/actions/setIsAuthenticated.dart';
+import 'package:casseurflutter/redux/actions/setProfile.dart';
 import 'package:casseurflutter/redux/reducer.dart';
 import 'package:casseurflutter/redux/state.dart';
+import 'package:casseurflutter/utils/token.dart';
+import 'package:casseurflutter/views/Logout.dart';
+import 'package:casseurflutter/widgets/scaffold.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
@@ -14,7 +18,7 @@ import 'Login.dart';
 import 'Memos.dart';
 
 class Home extends StatefulWidget {
-  static const String id = "/";
+  static const String id = "/splashscreen";
 
   @override
   _HomeState createState() => _HomeState();
@@ -53,36 +57,15 @@ class _HomeState extends State<Home> {
               }
           });
     }
-    return Center(child: CircularProgressIndicator());
-  }
-
-  Map<String, dynamic> parseIdToken(String idToken) {
-    final parts = idToken.split(r'.');
-    assert(parts.length == 3);
-
-    return jsonDecode(
-        utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))));
-  }
-
-  bool isTokenExpired(Map<String, dynamic> parsedIdToken) {
-    var expDate =
-        DateTime.fromMillisecondsSinceEpoch(parsedIdToken['exp'] * 1000);
-    return expDate.isBefore(DateTime.now());
-  }
-
-  ProfileState extractUserInfo(Map<String, dynamic> parsedIdToken) {
-    var p = ProfileState();
-    p.name = parsedIdToken['name'];
-    p.email = parsedIdToken['email'];
-    p.avatar = parsedIdToken['picture'];
-    return p;
+    return AppScaffold(child: Center(child: CircularProgressIndicator()));
   }
 
   void logoutAction() async {
-    await secureStorage.delete(key: 'refresh_token');
-    setState(() {
-      isLoggedIn = false;
-      isBusy = false;
+    Future.microtask(() => {
+      Navigator.pushReplacement(context, PageRouteBuilder(
+        pageBuilder: (context, animation1, animation2) => Logout(),
+        transitionDuration: Duration(seconds: 0),
+      ))
     });
   }
 
@@ -118,7 +101,7 @@ class _HomeState extends State<Home> {
         var profile = extractUserInfo(orgParsedIdToken);
         dispatch(AppActions.setIsAuthenticated,
             SetIsAuthenticatedData(isAuthenticated: true));
-        dispatch(AppActions.setProfile, profile);
+        dispatch(AppActions.setProfile, SetProfileData(profile: profile));
         setState(() {
           isBusy = false;
           isLoggedIn = true;
@@ -141,7 +124,7 @@ class _HomeState extends State<Home> {
       await secureStorage.write(key: 'id_token', value: response.idToken);
       dispatch(AppActions.setIsAuthenticated,
           SetIsAuthenticatedData(isAuthenticated: true));
-      dispatch(AppActions.setProfile, profile);
+      dispatch(AppActions.setProfile, SetProfileData(profile: profile));
       setState(() {
         isBusy = false;
         isLoggedIn = true;

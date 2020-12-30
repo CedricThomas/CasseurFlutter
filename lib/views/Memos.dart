@@ -1,3 +1,4 @@
+import 'package:casseurflutter/widgets/scaffold.dart';
 import 'package:flutter/material.dart';
 
 class Memos extends StatefulWidget {
@@ -10,11 +11,14 @@ class Memos extends StatefulWidget {
 class _MemosState extends State<Memos> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        CircularProgressIndicator(),
-      ],
+    return AppScaffold(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("Memos"),
+          CircularProgressIndicator(),
+        ],
+      ),
     );
   }
 }
