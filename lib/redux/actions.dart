@@ -1,0 +1,4 @@
+enum AppActions {
+  setIsAuthenticated,
+  setProfile,
+}
