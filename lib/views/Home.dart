@@ -31,6 +31,8 @@ class _HomeState extends State<Home> {
   final FlutterAppAuth appAuth = FlutterAppAuth();
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
+  APIService api = APIService();
+
   @override
   Widget build(BuildContext context) {
     if (!isBusy) {
@@ -133,5 +135,6 @@ class _HomeState extends State<Home> {
       print('error on refresh token: $e - stack: $s');
       logoutAction();
     }
+    super.initState();
   }
 }
