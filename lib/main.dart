@@ -1,39 +1,57 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:casseurflutter/views/Home.dart';
-import 'package:flutter/material.dart';
+import 'dart:developer';
 
-Future<void> main() async {
+import 'package:casseurflutter/redux/actions.dart';
+import 'package:casseurflutter/redux/actions/setIsAuthenticated.dart';
+import 'package:casseurflutter/redux/reducer.dart';
+import 'package:casseurflutter/redux/state.dart';
+import 'package:casseurflutter/views/Router.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(MyApp());
+  final store = new Store<AppState>(reducer, initialState: AppState());
+  log(store.toString());
+  runApp(MyApp(store: store,));
 }
 
 class MyApp extends StatelessWidget {
+  final Store<AppState> store;
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+
+  MyApp({Key key, this.store}) : super(key: key);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: Home.id,
-      routes: {
-        Home.id: (context) => Home(),
-      },
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+    dispatch(store, AppActions.setIsAuthenticated, SetIsAuthenticatedData(isAuthenticated: true));
+    return StoreProvider<AppState>(
+      store: store,
+      child: FutureBuilder(
+          future: _initialization,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+                child: Text(
+                  "A fatal error occurred",
+                  textDirection: TextDirection.ltr,
+                ),
+              );
+            }
+            if (snapshot.connectionState == ConnectionState.done) {
+              return InternalRouter();
+            }
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+              child: Text(
+                "Loading",
+                textDirection: TextDirection.ltr,
+              ),
+            );
+          }),
     );
   }
 }

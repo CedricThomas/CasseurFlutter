@@ -26,6 +26,7 @@ dependencies:
   flutter_secure_storage: ^3.3.5
   firebase_core: ^0.5.3
   firebase_messaging: ^7.0.3
+  flutter_redux: ^0.7.0
   flutter:
     sdk: flutter
 
