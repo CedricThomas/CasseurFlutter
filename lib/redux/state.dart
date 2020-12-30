@@ -1,7 +1,7 @@
 class ProfileState {
-  String name = "";
-  String email = "";
-  String avatar = "";
+  String name = '';
+  String email = '';
+  String avatar = '';
 }
 
 class AppState {

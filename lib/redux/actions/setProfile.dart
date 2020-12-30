@@ -2,14 +2,14 @@ import '../reducer.dart';
 import '../state.dart';
 
 class SetProfileData {
-  final ProfileState profile;
-
   SetProfileData({this.profile});
+
+  final ProfileState profile;
 }
 
 
 AppState handleSetProfile(AppState curState, Dispatchable evt) {
-  SetProfileData data = evt.data;
+  final SetProfileData data = evt.data as SetProfileData;
   curState.profile = data.profile;
   return curState;
 }

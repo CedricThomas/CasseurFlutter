@@ -2,13 +2,13 @@ import '../reducer.dart';
 import '../state.dart';
 
 class SetIsAuthenticatedData {
-  final bool isAuthenticated;
-
   SetIsAuthenticatedData({this.isAuthenticated});
+
+  final bool isAuthenticated;
 }
 
 AppState handleSetIsAuthenticated(AppState curState, Dispatchable evt) {
-  SetIsAuthenticatedData data = evt.data;
+  final SetIsAuthenticatedData data = evt.data as SetIsAuthenticatedData;
   curState.isAuthenticated = data.isAuthenticated;
   return curState;
 }

@@ -8,7 +8,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'Home.dart';
 
 class Logout extends StatefulWidget {
-  static final String id = "/logout";
+  static const String id = '/logout';
   @override
   _LogoutState createState() => _LogoutState();
 }
@@ -23,7 +23,7 @@ class _LogoutState extends State<Logout> {
     logoutAction();
   }
 
-  void logoutAction() async {
+  Future<void> logoutAction() async {
     await secureStorage.delete(key: 'refresh_token');
     await secureStorage.delete(key: 'id_token');
     dispatch(AppActions.setIsAuthenticated,
@@ -36,12 +36,12 @@ class _LogoutState extends State<Logout> {
   @override
   Widget build(BuildContext context) {
     if (!isBusy) {
-      Future.microtask(() => Navigator.pushReplacement(context, PageRouteBuilder(
-        pageBuilder: (context, animation1, animation2) => Home(),
-        transitionDuration: Duration(seconds: 0),
+      Future<void>.microtask(() => Navigator.pushReplacement(context, PageRouteBuilder<Home>(
+        pageBuilder: (BuildContext context, Animation<double> animation1, Animation<double> animation2) => Home(),
+        transitionDuration: const Duration(seconds: 0),
       )));
     }
-    return AppScaffold(
+    return const AppScaffold(
       child: Center(
         child: CircularProgressIndicator(),
       ),

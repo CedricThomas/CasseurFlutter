@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'drawer.dart';
 
 class AppScaffold extends StatelessWidget {
-  final Widget child;
+  const AppScaffold({this.child});
 
-  AppScaffold({this.child});
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +24,9 @@ class AppScaffold extends StatelessWidget {
             );
           },
         ),
-        title: Text("Casseur Flutter"),
+        title: const Text('Casseur Flutter'),
       ),
-      body: Container(child: this.child, constraints: BoxConstraints(minWidth: double.infinity),),
+      body: Container(child: child, constraints: const BoxConstraints(minWidth: double.infinity),),
     );
   }
 }

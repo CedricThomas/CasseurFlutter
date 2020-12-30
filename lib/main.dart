@@ -1,9 +1,7 @@
 import 'package:casseurflutter/redux/state.dart';
 import 'package:casseurflutter/views/Initializer.dart';
-import 'package:casseurflutter/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:redux/redux.dart';
 
 import 'redux/store.dart';
 import 'views/Home.dart';
@@ -38,18 +36,18 @@ class MyApp extends StatelessWidget {
           // the app on. For desktop platforms, the controls will be smaller and
           // closer together (more dense) than on mobile platforms.
           visualDensity: VisualDensity.adaptivePlatformDensity,
-          inputDecorationTheme: InputDecorationTheme(
+          inputDecorationTheme: const InputDecorationTheme(
             focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.blue)),
           ),
         ),
         initialRoute: Initializer.id,
-        routes: {
-          Initializer.id: (context) => Initializer(),
-          Home.id: (context) => Home(),
-          Login.id: (context) => Login(),
-          Logout.id: (context) => Logout(),
-          Memos.id: (context) => Memos(),
+        routes: <String, WidgetBuilder>{
+          Initializer.id: (BuildContext context) => Initializer(),
+          Home.id: (BuildContext context) => Home(),
+          Login.id: (BuildContext context) => Login(),
+          Logout.id: (BuildContext context) => Logout(),
+          Memos.id: (BuildContext context) => Memos(),
         },
       ),
     );

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:casseurflutter/redux/actions.dart';
 import 'package:casseurflutter/redux/actions/setIsAuthenticated.dart';
 import 'package:casseurflutter/redux/actions/setProfile.dart';
@@ -8,7 +6,6 @@ import 'package:casseurflutter/redux/state.dart';
 import 'package:casseurflutter/utils/token.dart';
 import 'package:casseurflutter/views/Logout.dart';
 import 'package:casseurflutter/widgets/scaffold.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -18,7 +15,7 @@ import 'Login.dart';
 import 'Memos.dart';
 
 class Home extends StatefulWidget {
-  static const String id = "/splashscreen";
+  static const String id = '/splashscreen';
 
   @override
   _HomeState createState() => _HomeState();
@@ -31,48 +28,57 @@ class _HomeState extends State<Home> {
   final FlutterAppAuth appAuth = FlutterAppAuth();
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
-  APIService api = APIService();
-
   @override
   Widget build(BuildContext context) {
     if (!isBusy) {
-      Future.microtask(() => {
+      Future<void>.microtask(() => <void>{
             if (!isLoggedIn)
-              {
+              <void>{
                 Navigator.pushReplacement(
                   context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation1, animation2) => Login(),
-                    transitionDuration: Duration(seconds: 0),
+                  PageRouteBuilder<Login>(
+                    pageBuilder: (BuildContext context,
+                            Animation<double> animation1,
+                            Animation<double> animation2) =>
+                        Login(),
+                    transitionDuration: const Duration(seconds: 0),
                   ),
                 )
               }
             else
-              {
+              <void>{
                 Navigator.pushReplacement(
                   context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation1, animation2) => Memos(),
-                    transitionDuration: Duration(seconds: 0),
+                  PageRouteBuilder<Memos>(
+                    pageBuilder: (BuildContext context,
+                            Animation<double> animation1,
+                            Animation<double> animation2) =>
+                        Memos(),
+                    transitionDuration: const Duration(seconds: 0),
                   ),
                 )
               }
           });
     }
-    return AppScaffold(child: Center(child: CircularProgressIndicator()));
+    return const AppScaffold(child: Center(child: CircularProgressIndicator()));
   }
 
-  void logoutAction() async {
-    Future.microtask(() => {
-      Navigator.pushReplacement(context, PageRouteBuilder(
-        pageBuilder: (context, animation1, animation2) => Logout(),
-        transitionDuration: Duration(seconds: 0),
-      ))
-    });
+  Future<void> logoutAction() async {
+    Future<void>.microtask(() => <void>{
+          Navigator.pushReplacement(
+              context,
+              PageRouteBuilder<Logout>(
+                pageBuilder: (BuildContext context,
+                        Animation<double> animation1,
+                        Animation<double> animation2) =>
+                    Logout(),
+                transitionDuration: const Duration(seconds: 0),
+              ))
+        });
   }
 
   @override
-  void setState(fn) {
+  void setState(VoidCallback fn) {
     if (mounted) {
       super.setState(fn);
     }
@@ -84,9 +90,10 @@ class _HomeState extends State<Home> {
     initAction();
   }
 
-  void initAction() async {
-    final storedRefreshToken = await secureStorage.read(key: 'refresh_token');
-    final storedIdToken = await secureStorage.read(key: 'id_token');
+  Future<void> initAction() async {
+    final String storedRefreshToken =
+        await secureStorage.read(key: 'refresh_token');
+    final String storedIdToken = await secureStorage.read(key: 'id_token');
     if (storedRefreshToken == null || storedIdToken == null) {
       setState(() {
         isBusy = false;
@@ -98,9 +105,9 @@ class _HomeState extends State<Home> {
     }
 
     try {
-      Map<String, dynamic> orgParsedIdToken = parseIdToken(storedIdToken);
+      final Map<String, dynamic> orgParsedIdToken = parseIdToken(storedIdToken);
       if (!isTokenExpired(orgParsedIdToken)) {
-        var profile = extractUserInfo(orgParsedIdToken);
+        final ProfileState profile = extractUserInfo(orgParsedIdToken);
         dispatch(AppActions.setIsAuthenticated,
             SetIsAuthenticatedData(isAuthenticated: true));
         dispatch(AppActions.setProfile, SetProfileData(profile: profile));
@@ -111,15 +118,15 @@ class _HomeState extends State<Home> {
         return;
       }
 
-      final response = await appAuth.token(TokenRequest(
+      final TokenResponse response = await appAuth.token(TokenRequest(
         AUTH0_CLIENT_ID,
         AUTH0_REDIRECT_URI,
         issuer: AUTH0_ISSUER,
         refreshToken: storedRefreshToken,
       ));
 
-      final idToken = parseIdToken(response.idToken);
-      var profile = extractUserInfo(idToken);
+      final Map<String, dynamic> idToken = parseIdToken(response.idToken);
+      final ProfileState profile = extractUserInfo(idToken);
 
       await secureStorage.write(
           key: 'refresh_token', value: response.refreshToken);

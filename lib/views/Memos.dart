@@ -2,7 +2,7 @@ import 'package:casseurflutter/widgets/scaffold.dart';
 import 'package:flutter/material.dart';
 
 class Memos extends StatefulWidget {
-  static const String id = "/memos";
+  static const String id = '/memos';
 
   @override
   _MemosState createState() => _MemosState();
@@ -14,8 +14,8 @@ class _MemosState extends State<Memos> {
     return AppScaffold(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("Memos"),
+        children: const<Widget>[
+          Text('Memos'),
           CircularProgressIndicator(),
         ],
       ),

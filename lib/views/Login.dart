@@ -1,9 +1,8 @@
-import 'dart:developer';
-
 import 'package:casseurflutter/redux/actions.dart';
 import 'package:casseurflutter/redux/actions/setIsAuthenticated.dart';
 import 'package:casseurflutter/redux/actions/setProfile.dart';
 import 'package:casseurflutter/redux/reducer.dart';
+import 'package:casseurflutter/redux/state.dart';
 import 'package:casseurflutter/utils/token.dart';
 import 'package:casseurflutter/widgets/scaffold.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +13,7 @@ import '../constants.dart';
 import 'Memos.dart';
 
 class Login extends StatefulWidget {
-  static const String id = "/login";
+  static const String id = '/login';
 
   @override
   _LoginState createState() => _LoginState();
@@ -27,7 +26,6 @@ class _LoginState extends State<Login> {
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   Future<void> loginAction() async {
-    log("will login");
     setState(() {
       isBusy = true;
       errorMessage = '';
@@ -40,7 +38,7 @@ class _LoginState extends State<Login> {
           AUTH0_CLIENT_ID,
           AUTH0_REDIRECT_URI,
           issuer: 'https://$AUTH0_DOMAIN',
-          scopes: ['openid', 'profile', 'offline_access', 'email'],
+          scopes: <String>['openid', 'profile', 'offline_access', 'email'],
           // promptValues: ['login']
         ),
       );
@@ -50,15 +48,15 @@ class _LoginState extends State<Login> {
       await secureStorage.write(
           key: 'refresh_token', value: result.refreshToken);
 
-      var parsedIdToken = parseIdToken(result.idToken);
-      var profile = extractUserInfo(parsedIdToken);
+      final Map<String, dynamic> parsedIdToken = parseIdToken(result.idToken);
+      final ProfileState profile = extractUserInfo(parsedIdToken);
       dispatch(AppActions.setIsAuthenticated, SetIsAuthenticatedData(isAuthenticated: true));
       dispatch(AppActions.setProfile, SetProfileData(profile: profile));
       setState(() {
         isBusy = false;
       });
       Navigator.pushReplacementNamed(context, Memos.id);
-    } catch (e, s) {
+    } catch (e) {
       setState(() {
         isBusy = false;
         errorMessage = e.toString();
@@ -72,8 +70,8 @@ class _LoginState extends State<Login> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text(
-            "You must log yourself in order to use CasseurFlutter",
+          const Text(
+            'You must log yourself in order to use CasseurFlutter',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.normal,
@@ -90,7 +88,7 @@ class _LoginState extends State<Login> {
             onPressed: () {
               loginAction();
             },
-            child: Text('Login'),
+            child: const Text('Login'),
           ),
           Text(errorMessage ?? ''),
         ],

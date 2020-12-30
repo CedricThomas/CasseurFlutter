@@ -1,15 +1,37 @@
 class UserInfoAddress {
-  final String country;
-
   UserInfoAddress.fromJson(Map<String, dynamic> json)
-      : country = json['country'];
+      : country = json['country'] as String;
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'country': country,
       };
+
+  final String country;
 }
 
 class UserInfo {
+  UserInfo.fromJson(Map<String, dynamic> json)
+      : sub = json['sub'] as String,
+        name = json['name'] as String,
+        givenName = json['given_name'] as String,
+        familyName = json['family_name'] as String,
+        middleName = json['middle_name'] as String,
+        nickname = json['nickname'] as String,
+        preferredUsername = json['preferred_username'] as String,
+        profile = json['profile'] as String,
+        picture = json['picture'] as String,
+        website = json['website'] as String,
+        email = json['email'] as String,
+        emailVerified = json['email_verified'] as String,
+        gender = json['gender'] as String,
+        birthdate = json['birthdate'] as String,
+        zoneinfo = json['zoneinfo'] as String,
+        locale = json['locale'] as String,
+        phoneNumber = json['phone_number'] as String,
+        phoneNumberVerified = json['phone_number_verified'] as String,
+        address = UserInfoAddress.fromJson(json['address'] as Map<String, dynamic>),
+        updatedAt = json['updated_at'] as String;
+
   final String sub;
   final String name;
   final String givenName;
@@ -31,29 +53,8 @@ class UserInfo {
   final UserInfoAddress address;
   final String updatedAt;
 
-  UserInfo.fromJson(Map<String, dynamic> json)
-      : sub = json['sub'],
-        name = json['name'],
-        givenName = json['given_name'],
-        familyName = json['family_name'],
-        middleName = json['middle_name'],
-        nickname = json['nickname'],
-        preferredUsername = json['preferred_username'],
-        profile = json['profile'],
-        picture = json['picture'],
-        website = json['website'],
-        email = json['email'],
-        emailVerified = json['email_verified'],
-        gender = json['gender'],
-        birthdate = json['birthdate'],
-        zoneinfo = json['zoneinfo'],
-        locale = json['locale'],
-        phoneNumber = json['phone_number'],
-        phoneNumberVerified = json['phone_number_verified'],
-        address = UserInfoAddress.fromJson(json['address']),
-        updatedAt = json['updated_at'];
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'sub': sub,
         'name': name,
         'given_name': givenName,
