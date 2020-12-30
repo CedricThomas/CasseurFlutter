@@ -1,14 +1,13 @@
 import 'dart:convert';
-import 'dart:developer';
+
 import 'package:casseurflutter/redux/actions.dart';
 import 'package:casseurflutter/redux/actions/setIsAuthenticated.dart';
 import 'package:casseurflutter/redux/reducer.dart';
 import 'package:casseurflutter/redux/state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_appauth/flutter_appauth.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../constants.dart';
 import 'Login.dart';
@@ -31,27 +30,28 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     if (!isBusy) {
-      Future.microtask(() =>
-      {
-        if (!isLoggedIn) {
-          Navigator.pushReplacement(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation1, animation2) => Login(),
-              transitionDuration: Duration(seconds: 0),
-            ),
-          )
-        } else
-          {
-            Navigator.pushReplacement(
-              context,
-              PageRouteBuilder(
-                pageBuilder: (context, animation1, animation2) => Memos(),
-                transitionDuration: Duration(seconds: 0),
-              ),
-            )
-          }
-      });
+      Future.microtask(() => {
+            if (!isLoggedIn)
+              {
+                Navigator.pushReplacement(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation1, animation2) => Login(),
+                    transitionDuration: Duration(seconds: 0),
+                  ),
+                )
+              }
+            else
+              {
+                Navigator.pushReplacement(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation1, animation2) => Memos(),
+                    transitionDuration: Duration(seconds: 0),
+                  ),
+                )
+              }
+          });
     }
     return Center(child: CircularProgressIndicator());
   }
@@ -65,7 +65,8 @@ class _HomeState extends State<Home> {
   }
 
   bool isTokenExpired(Map<String, dynamic> parsedIdToken) {
-    var expDate = DateTime.fromMillisecondsSinceEpoch(parsedIdToken['exp'] * 1000);
+    var expDate =
+        DateTime.fromMillisecondsSinceEpoch(parsedIdToken['exp'] * 1000);
     return expDate.isBefore(DateTime.now());
   }
 
@@ -87,7 +88,7 @@ class _HomeState extends State<Home> {
 
   @override
   void setState(fn) {
-    if(mounted) {
+    if (mounted) {
       super.setState(fn);
     }
   }
@@ -114,7 +115,7 @@ class _HomeState extends State<Home> {
     try {
       Map<String, dynamic> orgParsedIdToken = parseIdToken(storedIdToken);
       if (!isTokenExpired(orgParsedIdToken)) {
-        ProfileState profile = extractUserInfo(orgParsedIdToken);
+        var profile = extractUserInfo(orgParsedIdToken);
         dispatch(AppActions.setIsAuthenticated,
             SetIsAuthenticatedData(isAuthenticated: true));
         dispatch(AppActions.setProfile, profile);
@@ -124,33 +125,30 @@ class _HomeState extends State<Home> {
         });
         return;
       }
-      log("will try to refresh");
 
-      // final response = await appAuth.token(TokenRequest(
-      //   AUTH0_CLIENT_ID,
-      //   AUTH0_REDIRECT_URI,
-      //   issuer: AUTH0_ISSUER,
-      //   refreshToken: storedRefreshToken,
-      // ));
-      log("is refreshed");
+      final response = await appAuth.token(TokenRequest(
+        AUTH0_CLIENT_ID,
+        AUTH0_REDIRECT_URI,
+        issuer: AUTH0_ISSUER,
+        refreshToken: storedRefreshToken,
+      ));
 
-      // final idToken = parseIdToken(response.idToken);
-      // final profile = await getUserDetails(response.accessToken);
+      final idToken = parseIdToken(response.idToken);
+      var profile = extractUserInfo(idToken);
 
-      // secureStorage.write(key: 'refresh_token', value: response.refreshToken);
+      await secureStorage.write(
+          key: 'refresh_token', value: response.refreshToken);
+      await secureStorage.write(key: 'id_token', value: response.idToken);
       dispatch(AppActions.setIsAuthenticated,
           SetIsAuthenticatedData(isAuthenticated: true));
-
+      dispatch(AppActions.setProfile, profile);
       setState(() {
         isBusy = false;
         isLoggedIn = true;
-        // name = idToken['name'];
-        // picture = profile['picture'];
       });
     } catch (e, s) {
-      log("could not refresh token");
       print('error on refresh token: $e - stack: $s');
-      // logoutAction();
+      logoutAction();
     }
   }
 }
