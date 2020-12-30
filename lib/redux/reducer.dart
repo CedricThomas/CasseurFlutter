@@ -1,9 +1,10 @@
+import 'package:casseurflutter/redux/actions/setProfile.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:redux/redux.dart';
 
 import 'actions/setIsAuthenticated.dart';
 import 'actions.dart';
 import 'state.dart';
+import 'store.dart';
 
 class Dispatchable {
   final AppActions action;
@@ -12,7 +13,7 @@ class Dispatchable {
   Dispatchable({Key key, this.action, this.data});
 }
 
-dispatch(Store<AppState> store, AppActions action, dynamic data) {
+dispatch(AppActions action, dynamic data) {
   store.dispatch(Dispatchable(action: action, data: data));
 }
 
@@ -21,6 +22,10 @@ AppState reducer(AppState curState, dynamic recEvt) {
   switch (evt.action) {
     case AppActions.setIsAuthenticated: {
       return handleSetIsAuthenticated(curState, evt);
+    }
+    break;
+    case AppActions.setProfile: {
+      return handleSetProfile(curState, evt);
     }
     break;
   }
