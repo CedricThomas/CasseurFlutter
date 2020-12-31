@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
               UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
         ),
       ),
-      initialRoute: Initializer.id,
+      initialRoute: Home.id,
       routes: <String, WidgetBuilder>{
         Initializer.id: (BuildContext context) => Initializer(),
         Home.id: (BuildContext context) => Home(),
