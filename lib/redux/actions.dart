@@ -1,4 +1,0 @@
-enum AppActions {
-  setIsAuthenticated,
-  setProfile,
-}

@@ -1,16 +1,19 @@
-class UserInfoAddress {
-  UserInfoAddress.fromJson(Map<String, dynamic> json)
-      : country = json['country'] as String;
+import 'package:equatable/equatable.dart';
+
+class ProfileAddress extends Equatable {
+  ProfileAddress.fromJson(dynamic json) : country = json['country'] as String;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'country': country,
       };
-
   final String country;
+
+  @override
+  List<Object> get props => <Object>[country];
 }
 
-class UserInfo {
-  UserInfo.fromJson(Map<String, dynamic> json)
+class Profile extends Equatable {
+  Profile.fromJson(dynamic json)
       : sub = json['sub'] as String,
         name = json['name'] as String,
         givenName = json['given_name'] as String,
@@ -29,30 +32,8 @@ class UserInfo {
         locale = json['locale'] as String,
         phoneNumber = json['phone_number'] as String,
         phoneNumberVerified = json['phone_number_verified'] as String,
-        address = UserInfoAddress.fromJson(json['address'] as Map<String, dynamic>),
+        address = ProfileAddress.fromJson(json['address']),
         updatedAt = json['updated_at'] as String;
-
-  final String sub;
-  final String name;
-  final String givenName;
-  final String familyName;
-  final String middleName;
-  final String nickname;
-  final String preferredUsername;
-  final String profile;
-  final String picture;
-  final String website;
-  final String email;
-  final String emailVerified;
-  final String gender;
-  final String birthdate;
-  final String zoneinfo;
-  final String locale;
-  final String phoneNumber;
-  final String phoneNumberVerified;
-  final UserInfoAddress address;
-  final String updatedAt;
-
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'sub': sub,
@@ -76,4 +57,49 @@ class UserInfo {
         'address': address.toJson(),
         'updated_at': updatedAt,
       };
+
+  final String sub;
+  final String name;
+  final String givenName;
+  final String familyName;
+  final String middleName;
+  final String nickname;
+  final String preferredUsername;
+  final String profile;
+  final String picture;
+  final String website;
+  final String email;
+  final String emailVerified;
+  final String gender;
+  final String birthdate;
+  final String zoneinfo;
+  final String locale;
+  final String phoneNumber;
+  final String phoneNumberVerified;
+  final ProfileAddress address;
+  final String updatedAt;
+
+  @override
+  List<Object> get props => <Object>[
+        sub,
+        name,
+        givenName,
+        familyName,
+        middleName,
+        nickname,
+        preferredUsername,
+        profile,
+        picture,
+        website,
+        email,
+        emailVerified,
+        gender,
+        birthdate,
+        zoneinfo,
+        locale,
+        phoneNumber,
+        phoneNumberVerified,
+        address,
+        updatedAt
+      ];
 }
