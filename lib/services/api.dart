@@ -1,11 +1,12 @@
 import 'dart:convert';
+
 import 'package:casseurflutter/exceptions/exceptions.dart';
 import 'package:casseurflutter/models/models.dart';
 import 'package:casseurflutter/models/profile.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_appauth/flutter_appauth.dart';
 
 import '../constants.dart';
 
