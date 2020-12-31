@@ -1,4 +1,5 @@
 import 'package:casseurflutter/blocs/authentication/authentication.dart';
+import 'package:casseurflutter/views/utils.dart';
 import 'package:casseurflutter/widgets/scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
@@ -22,26 +23,16 @@ class _HomeState extends State<Home> {
   final FlutterAppAuth appAuth = FlutterAppAuth();
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
-  void hardNavigation(Widget view) {
-    Navigator.pushReplacement(
-      context,
-      PageRouteBuilder<Widget>(
-        pageBuilder: (BuildContext context, Animation<double> animation1,
-                Animation<double> animation2) =>
-            view,
-        transitionDuration: const Duration(seconds: 0),
-      ),
-    );
-  }
+
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (BuildContext context, AuthenticationState state) {
         if (state is AuthenticationAuthenticated) {
-          hardNavigation(Memos());
+          hardNavigate(context, Memos());
         } else if (state is AuthenticationNotAuthenticated) {
-          hardNavigation(Login());
+          hardNavigate(context, Login());
         }
       },
       child:

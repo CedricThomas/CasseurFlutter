@@ -1,6 +1,7 @@
 import 'package:casseurflutter/blocs/authentication/authentication.dart';
 import 'package:casseurflutter/blocs/login/login.dart';
 import 'package:casseurflutter/services/services.dart';
+import 'package:casseurflutter/views/utils.dart';
 import 'package:casseurflutter/widgets/scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
@@ -33,15 +34,7 @@ class _LoginState extends State<Login> {
       child: BlocConsumer<LoginBloc, LoginState>(
           listener: (BuildContext context, LoginState state) {
         if (state is LoginSuccess) {
-          Navigator.pushReplacement(
-            context,
-            PageRouteBuilder<Memos>(
-              pageBuilder: (BuildContext context, Animation<double> animation1,
-                      Animation<double> animation2) =>
-                  Memos(),
-              transitionDuration: const Duration(seconds: 0),
-            ),
-          );
+          hardNavigate(context, Memos());
         }
       }, builder: (BuildContext context, LoginState state) {
         final LoginBloc loginBloc = BlocProvider.of<LoginBloc>(context);

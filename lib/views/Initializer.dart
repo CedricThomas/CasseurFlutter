@@ -1,4 +1,5 @@
 import 'package:casseurflutter/views/Home.dart';
+import 'package:casseurflutter/views/utils.dart';
 import 'package:casseurflutter/widgets/scaffold.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -22,13 +23,7 @@ class Initializer extends StatelessWidget {
         }
         if (snapshot.connectionState == ConnectionState.done) {
           Future<void>.microtask(
-            () => Navigator.pushReplacement(
-              context,
-              PageRouteBuilder<Home>(
-                pageBuilder: (BuildContext context, Animation<double> animation1, Animation<double> animation2) => Home(),
-                transitionDuration: const Duration(seconds: 0),
-              ),
-            ),
+            () => hardNavigate(context, Home()),
           );
         }
         return const AppScaffold(
