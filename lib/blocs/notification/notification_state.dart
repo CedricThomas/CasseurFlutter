@@ -8,6 +8,8 @@ abstract class NotificationState extends Equatable {
 
 class NotificationInitial extends NotificationState {}
 
+class NotificationNotRegistered extends NotificationState {}
+
 class NotificationRegistering extends NotificationState {}
 
 class NotificationRegistered extends NotificationState {}

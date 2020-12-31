@@ -55,13 +55,20 @@ class APIService {
     return true;
   }
 
-  Future<User> loadFromStorage() async {
-    _refreshToken = await secureStorage.read(key: 'refresh_token');
+  Future<User> loadUserFromStorage() async {
     _idToken = await secureStorage.read(key: 'id_token');
-    if (_refreshToken != null || _idToken != null) {
+    if (_idToken != null) {
       return null;
     }
     return User.fromIdToken(_idToken);
+  }
+
+  Future<Subscription> loadSubscriptionFromStorage() async {
+    final String messagingToken = await secureStorage.read(key: 'messaging');
+    if (messagingToken == null) {
+      return null;
+    }
+    return Subscription.fromJson(messagingToken);
   }
 
   Future<User> login() async {
@@ -125,21 +132,25 @@ class APIService {
     }
   }
 
-  Future<void> registerNotification() async {
-    final String messagingToken = await secureStorage.read(key: 'messaging_token');
+  Future<Subscription> registerNotification() async {
+    final String messagingToken = await secureStorage.read(key: 'messaging');
+    Subscription currentSub;
+    if (messagingToken != null) {
+      currentSub = Subscription.fromJson(messagingToken);
+    }
     final FirebaseMessaging messaging = FirebaseMessaging();
     final bool hasNotificationPermission = await messaging.requestNotificationPermissions();
     if (!hasNotificationPermission) {
       throw const NotificationsRefusedException('The notification permission has been specifically denied by the user');
     }
     final String registrationToken = await messaging.getToken();
-    if (registrationToken == messagingToken) {
-      return;
+    if (currentSub != null && registrationToken == currentSub.registrationId) {
+      return currentSub;
     }
     try {
       final Subscription sub = await _internalRegisterNotification(CreateSubscription(registrationId: registrationToken));
-      await secureStorage.write(key: 'messaging_token', value: registrationToken);
-      await secureStorage.write(key: 'messaging_subscription_id', value: sub.subscriptionId);
+      await secureStorage.write(key: 'messaging', value: sub.toString());
+      return sub;
     } catch (e) {
       throw const NotificationsRegisterException('Unable to register notification on the API');
     }

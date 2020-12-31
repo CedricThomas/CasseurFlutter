@@ -22,30 +22,26 @@ class _HomeState extends State<Home> {
   final FlutterAppAuth appAuth = FlutterAppAuth();
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
+  void hardNavigation(Widget view) {
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder<Widget>(
+        pageBuilder: (BuildContext context, Animation<double> animation1,
+                Animation<double> animation2) =>
+            view,
+        transitionDuration: const Duration(seconds: 0),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (BuildContext context, AuthenticationState state) {
         if (state is AuthenticationAuthenticated) {
-          Navigator.pushReplacement(
-            context,
-            PageRouteBuilder<Memos>(
-              pageBuilder: (BuildContext context, Animation<double> animation1,
-                      Animation<double> animation2) =>
-                  Memos(),
-              transitionDuration: const Duration(seconds: 0),
-            ),
-          );
+          hardNavigation(Memos());
         } else if (state is AuthenticationNotAuthenticated) {
-          Navigator.pushReplacement(
-            context,
-            PageRouteBuilder<Login>(
-              pageBuilder: (BuildContext context, Animation<double> animation1,
-                      Animation<double> animation2) =>
-                  Login(),
-              transitionDuration: const Duration(seconds: 0),
-            ),
-          );
+          hardNavigation(Login());
         }
       },
       child:

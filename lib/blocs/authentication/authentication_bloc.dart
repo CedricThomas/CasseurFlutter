@@ -33,7 +33,7 @@ class AuthenticationBloc
   Stream<AuthenticationState> _mapAppLoadedToState(AppLoaded event) async* {
     yield AuthenticationLoading();
     try {
-      final User currentUser = await _apiService.loadFromStorage();
+      final User currentUser = await _apiService.loadUserFromStorage();
       if (currentUser != null) {
         yield AuthenticationAuthenticated(user: currentUser);
       } else {
