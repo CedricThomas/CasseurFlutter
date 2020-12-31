@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:casseurflutter/blocs/authentication/authentication.dart';
+import 'package:casseurflutter/exceptions/exceptions.dart';
+import 'package:casseurflutter/models/models.dart';
 import 'package:casseurflutter/services/services.dart';
 
 import 'login_event.dart';
@@ -27,16 +29,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       LoginInWithAuth0 event) async* {
     yield LoginLoading();
     try {
-      await _apiService.login();
-      //   if (user != null) {
-      //     _authenticationBloc.add(UserLoggedIn(user: user));
-      //     yield LoginSuccess();
-      //     yield LoginInitial();
-      //   } else {
-      //     yield LoginFailure(error: 'Something very weird just happened');
-      //   }
-      // } on AuthenticationException catch (e) {
-      //   yield LoginFailure(error: e.message);
+      final User user = await _apiService.login();
+      if (user != null) {
+        _authenticationBloc.add(UserLoggedIn(user: user));
+        yield LoginSuccess();
+        yield LoginInitial();
+      } else {
+        yield LoginFailure(error: 'Something very weird just happened');
+      }
+    } on AuthenticationException catch (e) {
+      yield LoginFailure(error: e.toString());
     } catch (err) {
       yield LoginFailure(
           error: err.message as String ?? 'An unknown error occured');

@@ -1,6 +1,6 @@
+import 'package:casseurflutter/models/user.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
-import '../../models/models.dart';
 
 abstract class AuthenticationState extends Equatable {
   const AuthenticationState();

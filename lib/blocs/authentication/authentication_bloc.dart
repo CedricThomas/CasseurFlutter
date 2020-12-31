@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:casseurflutter/models/user.dart';
 import 'package:casseurflutter/services/services.dart';
 
 import 'authentication_event.dart';
@@ -32,8 +33,7 @@ class AuthenticationBloc
   Stream<AuthenticationState> _mapAppLoadedToState(AppLoaded event) async* {
     yield AuthenticationLoading();
     try {
-      final currentUser = await _apiService.getUserInfo();
-
+      final User currentUser = await _apiService.loadFromStorage();
       if (currentUser != null) {
         yield AuthenticationAuthenticated(user: currentUser);
       } else {

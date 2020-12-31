@@ -25,47 +25,10 @@ class _LoginState extends State<Login> {
   final FlutterAppAuth appAuth = FlutterAppAuth();
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
-  Future<void> loginAction() async {
-    setState(() {
-      isBusy = true;
-      errorMessage = '';
-    });
-
-    try {
-      final AuthorizationTokenResponse result =
-      await appAuth.authorizeAndExchangeCode(
-        AuthorizationTokenRequest(
-          AUTH0_CLIENT_ID,
-          AUTH0_REDIRECT_URI,
-          issuer: 'https://$AUTH0_DOMAIN',
-          scopes: <String>['openid', 'profile', 'offline_access', 'email'],
-          // promptValues: ['login']
-        ),
-      );
-
-      await secureStorage.write(
-          key: 'id_token', value: result.idToken);
-      await secureStorage.write(
-          key: 'refresh_token', value: result.refreshToken);
-
-      final Map<String, dynamic> parsedIdToken = parseIdToken(result.idToken);
-      final ProfileState profile = extractUserInfo(parsedIdToken);
-      dispatch(AppActions.setIsAuthenticated, SetIsAuthenticatedData(isAuthenticated: true));
-      dispatch(AppActions.setProfile, SetProfileData(profile: profile));
-      setState(() {
-        isBusy = false;
-      });
-      Navigator.pushReplacementNamed(context, Memos.id);
-    } catch (e) {
-      setState(() {
-        isBusy = false;
-        errorMessage = e.toString();
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final authBloc = BlocProvider.of<AuthenticationBloc>(context);
+
     return AppScaffold(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -74,12 +37,11 @@ class _LoginState extends State<Login> {
             'You must log yourself in order to use CasseurFlutter',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontWeight: FontWeight.normal,
-              color: Colors.black,
-              decoration: TextDecoration.none,
-              fontSize: 16,
-              fontFamily: 'Roboto'
-            ),
+                fontWeight: FontWeight.normal,
+                color: Colors.black,
+                decoration: TextDecoration.none,
+                fontSize: 16,
+                fontFamily: 'Roboto'),
           ),
           Container(
             height: 40,
