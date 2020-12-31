@@ -10,25 +10,40 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   @override
   Stream<HomeState> mapEventToState(HomeEvent event) async* {
     if (event is HomeLoaded) {
-      yield* _mapHomeLoaded(event);
+      yield* _mapHomeLoadedToState(event);
     }
     if (event is HomeAuthenticationCheckEnd) {
-      yield* _mapHomeAuthenticationCheckEnd(event);
+      yield* _mapHomeAuthenticationCheckEndToState(event);
+    }
+    if (event is HomeNotificationCheckEnd) {
+      yield* _mapHomeNotificationCheckEndToState(event);
+    }
+    if (event is HomeDeclareFailure) {
+      yield* _mapHomeDeclareFailureToState(event);
     }
   }
 
-  Stream<HomeState> _mapHomeLoaded(HomeLoaded event) async* {
+  Stream<HomeState> _mapHomeLoadedToState(HomeLoaded event) async* {
     yield HomeFirebaseInitialising();
     final FirebaseApp initialization = await Firebase.initializeApp();
     yield HomeFirebaseInitialized(initialization);
   }
 
-  Stream<HomeState> _mapHomeAuthenticationCheckEnd(
+  Stream<HomeState> _mapHomeAuthenticationCheckEndToState(
       HomeAuthenticationCheckEnd event) async* {
     if (event.authenticated == true) {
       yield HomeAuthenticated();
     } else {
       yield HomeNotAuthenticated();
     }
+  }
+
+  Stream<HomeState> _mapHomeNotificationCheckEndToState(
+      HomeNotificationCheckEnd event) async* {
+    yield HomeNotificationRegistered();
+  }
+
+  Stream<HomeState> _mapHomeDeclareFailureToState(HomeDeclareFailure event) async* {
+    yield HomeFailure(error: event.message);
   }
 }

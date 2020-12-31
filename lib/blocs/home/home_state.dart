@@ -1,3 +1,4 @@
+import 'package:casseurflutter/views/Home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
@@ -20,6 +21,8 @@ class HomeFirebaseInitialized extends HomeState {
 class HomeAuthenticated extends HomeState {}
 
 class HomeNotAuthenticated extends HomeState {}
+
+class HomeNotificationRegistered extends HomeState {}
 
 class HomeFailure extends HomeState {
   HomeFailure({@required this.error});

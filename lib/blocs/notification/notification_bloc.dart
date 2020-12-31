@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:casseurflutter/exceptions/exceptions.dart';
 import 'package:casseurflutter/models/models.dart';
@@ -29,7 +31,10 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       RegisterNotification event) async* {
     yield NotificationRegistering();
     try {
-      await _apiService.registerNotification();
+      // await _apiService.registerNotification();
+      log('will register notification');
+      await Future<void>.delayed(const Duration(seconds: 5));
+      log('notification registered');
       yield NotificationRegistered();
       yield NotificationInitial();
     } on NotificationsRefusedException catch (e) {
