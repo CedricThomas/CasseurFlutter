@@ -4,7 +4,6 @@ import 'package:casseurflutter/blocs/home/home_event.dart';
 import 'package:casseurflutter/blocs/home/home_state.dart';
 import 'package:casseurflutter/views/Login.dart';
 import 'package:casseurflutter/views/Memos.dart';
-import 'package:casseurflutter/widgets/scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
