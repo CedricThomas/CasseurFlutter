@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "125848697812",
+    "project_id": "casseur-flutter",
+    "storage_bucket": "casseur-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:125848697812:android:0bb468a536dcfffddc7441",
+        "android_client_info": {
+          "package_name": "com.reyah.casseurflutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "125848697812-5l1pjs2pbkdvp7rqdvimptfm5henj673.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjNqODbJUfBL1MJD-ASwS0xmuBxVjit5Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "125848697812-5l1pjs2pbkdvp7rqdvimptfm5henj673.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

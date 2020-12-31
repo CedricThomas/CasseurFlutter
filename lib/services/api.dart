@@ -7,8 +7,6 @@ import 'package:flutter_appauth/flutter_appauth.dart';
 
 import '../constants.dart';
 
-// TODO fix this
-
 class APIService {
   APIService()
       : appAuth = FlutterAppAuth(),
@@ -57,23 +55,5 @@ class APIService {
   Future<void> logout() async {
     await secureStorage.delete(key: 'refresh_token');
     _isLoggedIn = false;
-  }
-
-  Future<void> refreshToken() async {
-    _isLoggedIn = false;
-    final String storedRefreshToken =
-        await secureStorage.read(key: 'refresh_token');
-    // if (storedRefreshToken == null) {
-    //   throw const RefreshException('Not refresh token found');
-    // }
-    final TokenResponse response = await appAuth.token(TokenRequest(
-      AUTH0_CLIENT_ID,
-      AUTH0_REDIRECT_URI,
-      issuer: AUTH0_ISSUER,
-      refreshToken: storedRefreshToken,
-    ));
-
-    secureStorage.write(key: 'refresh_token', value: response.refreshToken);
-    _isLoggedIn = true;
   }
 }
