@@ -35,9 +35,13 @@ class _HomeState extends State<Home> {
           listeners: [
             BlocListener<AuthenticationBloc, AuthenticationState>(
               listener: (BuildContext context, AuthenticationState state) {
-                final bool authState = state is AuthenticationAuthenticated;
-                homeBloc
-                    .add(HomeAuthenticationCheckEnd(authenticated: authState));
+                if (state is AuthenticationAuthenticated) {
+                  homeBloc.add(
+                      const HomeAuthenticationCheckEnd(authenticated: true));
+                } else if (state is AuthenticationNotAuthenticated) {
+                  homeBloc.add(
+                      const HomeAuthenticationCheckEnd(authenticated: false));
+                }
               },
             ),
             BlocListener<HomeBloc, HomeState>(
