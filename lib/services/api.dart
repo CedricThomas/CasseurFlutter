@@ -137,7 +137,9 @@ class APIService {
       return;
     }
     try {
-      await _internalRegisterNotification(CreateSubscription(registrationId: registrationToken));
+      final Subscription sub = await _internalRegisterNotification(CreateSubscription(registrationId: registrationToken));
+      await secureStorage.write(key: 'messaging_token', value: registrationToken);
+      await secureStorage.write(key: 'messaging_subscription_id', value: sub.subscriptionId);
     } catch (e) {
       throw const NotificationsRegisterException('Unable to register notification on the API');
     }
