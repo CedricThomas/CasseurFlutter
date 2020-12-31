@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-class UserAddress extends Equatable {
-  UserAddress.fromJson(dynamic json) : country = json['country'] as String;
+class ProfileAddress extends Equatable {
+  ProfileAddress.fromJson(dynamic json) : country = json['country'] as String;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'country': country,
@@ -12,8 +12,8 @@ class UserAddress extends Equatable {
   List<Object> get props => <Object>[country];
 }
 
-class User extends Equatable {
-  User.fromJson(dynamic json)
+class Profile extends Equatable {
+  Profile.fromJson(dynamic json)
       : sub = json['sub'] as String,
         name = json['name'] as String,
         givenName = json['given_name'] as String,
@@ -32,7 +32,7 @@ class User extends Equatable {
         locale = json['locale'] as String,
         phoneNumber = json['phone_number'] as String,
         phoneNumberVerified = json['phone_number_verified'] as String,
-        address = UserAddress.fromJson(json['address']),
+        address = ProfileAddress.fromJson(json['address']),
         updatedAt = json['updated_at'] as String;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -76,7 +76,7 @@ class User extends Equatable {
   final String locale;
   final String phoneNumber;
   final String phoneNumberVerified;
-  final UserAddress address;
+  final ProfileAddress address;
   final String updatedAt;
 
   @override

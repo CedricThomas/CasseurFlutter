@@ -1,2 +1,2 @@
+export './user.dart';
 export 'profile.dart';
-export 'user.dart';

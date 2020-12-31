@@ -1,4 +1,4 @@
-import 'package:casseurflutter/models/user.dart';
+import 'package:casseurflutter/models/models.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
