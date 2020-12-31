@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:casseurflutter/exceptions/exceptions.dart';
 import 'package:casseurflutter/models/models.dart';
 import 'package:casseurflutter/models/profile.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_appauth/flutter_appauth.dart';
@@ -22,7 +23,7 @@ class APIService {
 
   Future<Profile> getProfile() async {
     http.Client();
-    if (!(await tryToGetValideCredentials())) {
+    if (!(await tryToGetValidCredentials())) {
       throw const AuthenticationException('Not logged in');
     }
 
@@ -39,7 +40,7 @@ class APIService {
     }
   }
 
-  Future<bool> tryToGetValideCredentials() async {
+  Future<bool> tryToGetValidCredentials() async {
     if (_idToken == null || _refreshToken == null) {
       return false;
     }
@@ -103,5 +104,42 @@ class APIService {
     _idToken = response.idToken;
     _refreshToken = response.refreshToken;
     return User.fromIdToken(response.idToken);
+  }
+
+  Future<Subscription> _internalRegisterNotification(CreateSubscription data) async {
+    http.Client();
+    if (!(await tryToGetValidCredentials())) {
+      throw const AuthenticationException('Not logged in');
+    }
+    final String url = 'https://$API_URL/subscription';
+    final http.Response response = await http.post(
+      url,
+      headers: <String, String>{'Authorization': 'Bearer $_idToken', 'Content-type' : 'application/json'},
+      body: json.encode(data),
+    );
+
+    if (response.statusCode < 400 && response.statusCode != 0) {
+      return Subscription.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to register notifications');
+    }
+  }
+
+  Future<void> registerNotification() async {
+    final String messagingToken = await secureStorage.read(key: 'messaging_token');
+    final FirebaseMessaging messaging = FirebaseMessaging();
+    final bool hasNotificationPermission = await messaging.requestNotificationPermissions();
+    if (!hasNotificationPermission) {
+      throw const NotificationsRefusedException('The notification permission has been specifically denied by the user');
+    }
+    final String registrationToken = await messaging.getToken();
+    if (registrationToken == messagingToken) {
+      return;
+    }
+    try {
+      await _internalRegisterNotification(CreateSubscription(registrationId: registrationToken));
+    } catch (e) {
+      throw const NotificationsRegisterException('Unable to register notification on the API');
+    }
   }
 }
