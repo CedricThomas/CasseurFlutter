@@ -7,13 +7,29 @@ import '../views/Login.dart';
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
-        builder: (BuildContext context, AuthenticationState state) {
+    final AuthenticationBloc authBloc =
+        BlocProvider.of<AuthenticationBloc>(context);
+    return BlocConsumer<AuthenticationBloc, AuthenticationState>(
+        listener: (BuildContext context, AuthenticationState state) {
+      if (state is AuthenticationNotAuthenticated) {
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder<Login>(
+            pageBuilder: (BuildContext context, Animation<double> animation1,
+                    Animation<double> animation2) =>
+                Login(),
+            transitionDuration: const Duration(seconds: 0),
+          ),
+        );
+      }
+    }, builder: (BuildContext context, AuthenticationState state) {
       final List<Widget> menu = <Widget>[];
       if (state is AuthenticationAuthenticated) {
         menu.add(
           ListTile(
-            onTap: () {},
+            onTap: () {
+              authBloc.add(UserLoggedOut());
+            },
             title: const Text('Logout'),
             trailing: const Icon(Icons.logout),
           ),

@@ -40,7 +40,8 @@ class APIService {
   }
 
   Future<bool> tryToGetValideCredentials() async {
-    if (_idToken == null || _refreshToken == null) {
+    if (_idToken == null) {
+      //  || _refreshToken == null
       return false;
     }
     final User user = User.fromIdToken(_idToken);
@@ -57,7 +58,8 @@ class APIService {
   Future<User> loadFromStorage() async {
     _refreshToken = await secureStorage.read(key: 'refresh_token');
     _idToken = await secureStorage.read(key: 'id_token');
-    if (_refreshToken != null || _idToken != null) {
+    if (_idToken == null) {
+      // || _refreshToken == null
       return null;
     }
     return User.fromIdToken(_idToken);

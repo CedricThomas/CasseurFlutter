@@ -1,6 +1,5 @@
 import 'package:casseurflutter/blocs/authentication/authentication_bloc.dart';
 import 'package:casseurflutter/services/services.dart';
-import 'package:casseurflutter/views/Initializer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -52,9 +51,8 @@ class MyApp extends StatelessWidget {
               UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
         ),
       ),
-      initialRoute: Initializer.id,
+      initialRoute: Home.id,
       routes: <String, WidgetBuilder>{
-        Initializer.id: (BuildContext context) => Initializer(),
         Home.id: (BuildContext context) => Home(),
         Login.id: (BuildContext context) => Login(),
         Memos.id: (BuildContext context) => Memos(),
