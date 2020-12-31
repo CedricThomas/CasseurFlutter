@@ -1,29 +1,16 @@
 import 'dart:convert';
-import 'package:casseurflutter/models/UserInfo.dart';
+import 'package:casseurflutter/exceptions/exceptions.dart';
+import 'package:casseurflutter/models/user.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_appauth/flutter_appauth.dart';
 
 import '../constants.dart';
 
-class NotLoggedException implements Exception {
-  const NotLoggedException(this.msg);
-  final String msg;
-  @override
-  String toString() => 'NotLoggedException: $msg';
-}
-
-class RefreshException implements Exception {
-  const RefreshException(this.msg);
-  final String msg;
-  @override
-  String toString() => 'RefreshException: $msg';
-}
+// TODO fix this
 
 class APIService {
-  factory APIService() => _instance;
-
-  APIService._privateConstructor()
+  APIService()
       : appAuth = FlutterAppAuth(),
         secureStorage = const FlutterSecureStorage(),
         _isLoggedIn = false;
@@ -34,21 +21,20 @@ class APIService {
 
   bool get isLoggedIn => _isLoggedIn;
 
-  static final APIService _instance = APIService._privateConstructor();
-
-  Future<UserInfo> getUserInfo(String _accessToken) async {
+  Future<User> getUserInfo(String _accessToken) async {
+    http.Client();
     if (!isLoggedIn) {
-      throw const NotLoggedException('Not logged in');
+      throw const AuthenticationException('Not logged in');
     }
 
     final String url = 'https://$AUTH0_DOMAIN/userinfo';
     final http.Response response = await http.get(
       url,
-      headers: {'Authorization': 'Bearer $_accessToken'},
+      headers: <String, String>{'Authorization': 'Bearer $_accessToken'},
     );
 
     if (response.statusCode == 200) {
-      return UserInfo.fromJson(jsonDecode(response.body));
+      return User.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to get user details');
     }
@@ -62,7 +48,7 @@ class APIService {
       AUTH0_REDIRECT_URI,
       issuer: 'https://$AUTH0_DOMAIN',
       scopes: ['openid', 'profile', 'offline'],
-      additionalParameters: {'audience': 'casseur_flutter'},
+      additionalParameters: <String, String>{'audience': 'casseur_flutter'},
     ));
     await secureStorage.write(key: 'refresh_token', value: result.refreshToken);
     _isLoggedIn = true;
@@ -77,9 +63,9 @@ class APIService {
     _isLoggedIn = false;
     final String storedRefreshToken =
         await secureStorage.read(key: 'refresh_token');
-    if (storedRefreshToken == null) {
-      throw const RefreshException('Not refresh token found');
-    }
+    // if (storedRefreshToken == null) {
+    //   throw const RefreshException('Not refresh token found');
+    // }
     final TokenResponse response = await appAuth.token(TokenRequest(
       AUTH0_CLIENT_ID,
       AUTH0_REDIRECT_URI,
