@@ -1,11 +1,10 @@
 import 'package:casseurflutter/blocs/authentication/authentication.dart';
-import 'package:casseurflutter/views/utils.dart';
-import 'package:casseurflutter/widgets/scaffold.dart';
 import 'package:casseurflutter/blocs/home/home_bloc.dart';
 import 'package:casseurflutter/blocs/home/home_event.dart';
 import 'package:casseurflutter/blocs/home/home_state.dart';
 import 'package:casseurflutter/views/Login.dart';
 import 'package:casseurflutter/views/Memos.dart';
+import 'package:casseurflutter/widgets/scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,8 +23,6 @@ class _HomeState extends State<Home> {
   String errorMessage;
   final FlutterAppAuth appAuth = FlutterAppAuth();
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +64,8 @@ class _HomeState extends State<Home> {
               },
             ),
           ],
-          child: Scaffold(
-              body: Center(
+          child: AppScaffold(
+              child: Center(
                   child: errorMessage != null
                       ? Text(
                           errorMessage,
