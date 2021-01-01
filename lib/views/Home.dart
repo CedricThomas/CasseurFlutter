@@ -1,11 +1,8 @@
-import 'dart:developer';
-
 import 'package:casseurflutter/blocs/authentication/authentication.dart';
 import 'package:casseurflutter/blocs/home/home_bloc.dart';
 import 'package:casseurflutter/blocs/home/home_event.dart';
 import 'package:casseurflutter/blocs/home/home_state.dart';
 import 'package:casseurflutter/blocs/notification/notification.dart';
-import 'package:casseurflutter/services/services.dart';
 import 'package:casseurflutter/views/Login.dart';
 import 'package:casseurflutter/views/Memos.dart';
 import 'package:casseurflutter/views/utils.dart';
@@ -28,14 +25,13 @@ class _HomeState extends State<Home> {
   bool isLoggedIn;
   bool isNotificationRegistered;
   String errorMessage;
+  final HomeBloc homeBloc = HomeBloc();
   final FlutterAppAuth appAuth = FlutterAppAuth();
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   @override
   Widget build(BuildContext context) {
-    final APIService apiService = RepositoryProvider.of<APIService>(context);
-    final HomeBloc homeBloc = HomeBloc();
-    final NotificationBloc notificationBloc = NotificationBloc(apiService);
+    final NotificationBloc notificationBloc = BlocProvider.of<NotificationBloc>(context);
 
     return BlocProvider<HomeBloc>(
         create: (BuildContext context) => homeBloc,
@@ -55,16 +51,12 @@ class _HomeState extends State<Home> {
             ),
             BlocListener<NotificationBloc, NotificationState>(
                 listener: (BuildContext context, NotificationState state) {
-                  log('notification event received');
-                  log(state.toString());
               if (state is NotificationRegistered) {
-                homeBloc
-                    .add(HomeNotificationCheckEnd());
+                homeBloc.add(HomeNotificationCheckEnd());
               } else if (state is NotificationFailure) {
                 homeBloc.add(HomeDeclareFailure(message: state.error));
               } else if (state is NotificationRefused) {
-                homeBloc
-                    .add(HomeNotificationCheckEnd());
+                homeBloc.add(HomeNotificationCheckEnd());
               }
             }),
             BlocListener<HomeBloc, HomeState>(
@@ -109,10 +101,6 @@ class _HomeState extends State<Home> {
   }
 
   void validateHome(BuildContext context) {
-    log('validate home');
-    log(isFirebaseInitialized.toString());
-    log(isLoggedIn.toString());
-    log(isNotificationRegistered.toString());
     if (isFirebaseInitialized == false || isLoggedIn == null) {
       return;
     }

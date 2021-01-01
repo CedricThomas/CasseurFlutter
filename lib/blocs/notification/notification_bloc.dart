@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:casseurflutter/exceptions/exceptions.dart';
 import 'package:casseurflutter/models/models.dart';
@@ -31,21 +29,19 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       RegisterNotification event) async* {
     yield NotificationRegistering();
     try {
-      // await _apiService.registerNotification();
-      log('will register notification');
-      await Future<void>.delayed(const Duration(seconds: 5));
-      log('notification registered');
+      await _apiService.registerNotification();
       yield NotificationRegistered();
       yield NotificationInitial();
     } on NotificationsRefusedException catch (e) {
       yield NotificationRefused(error: e.toString());
     } catch (err) {
       yield NotificationFailure(
-          error: err.message as String ?? 'An unknown error occurred');
+          error: err.toString() ?? 'An unknown error occurred');
     }
   }
 
-  Stream<NotificationState> _mapAppLoadedToState(AppLoadedNotification event) async* {
+  Stream<NotificationState> _mapAppLoadedToState(
+      AppLoadedNotification event) async* {
     try {
       final Subscription sub = await _apiService.loadSubscriptionFromStorage();
       if (sub == null) {
@@ -54,7 +50,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
         yield NotificationRegistered();
       }
     } catch (err) {
-      yield NotificationFailure(error: err.message as String ?? 'An unknown error occurred');
+      yield NotificationFailure(
+          error: err.toString() ?? 'An unknown error occurred');
     }
   }
 }

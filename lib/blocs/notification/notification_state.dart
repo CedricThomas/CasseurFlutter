@@ -1,7 +1,9 @@
-import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 
 abstract class NotificationState extends Equatable {
+  const NotificationState();
+
   @override
   List<Object> get props => <Object>[];
 }
@@ -15,7 +17,7 @@ class NotificationRegistering extends NotificationState {}
 class NotificationRegistered extends NotificationState {}
 
 class NotificationRefused extends NotificationState {
-  NotificationRefused({@required this.error});
+  const NotificationRefused({@required this.error});
 
   final String error;
 
@@ -24,7 +26,7 @@ class NotificationRefused extends NotificationState {
 }
 
 class NotificationFailure extends NotificationState {
-  NotificationFailure({@required this.error});
+  const NotificationFailure({@required this.error});
 
   final String error;
 

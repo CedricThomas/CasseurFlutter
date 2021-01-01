@@ -1,7 +1,6 @@
-import 'package:casseurflutter/views/Home.dart';
+import 'package:equatable/equatable.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:meta/meta.dart';
-import 'package:equatable/equatable.dart';
 
 abstract class HomeState extends Equatable {
   @override

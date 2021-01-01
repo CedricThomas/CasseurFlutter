@@ -8,7 +8,7 @@ import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import 'Memos.dart';
+import 'Home.dart';
 
 class Login extends StatefulWidget {
   static const String id = '/login';
@@ -32,41 +32,43 @@ class _LoginState extends State<Login> {
     return BlocProvider<LoginBloc>(
       create: (BuildContext context) => LoginBloc(authBloc, apiService),
       child: BlocConsumer<LoginBloc, LoginState>(
-          listener: (BuildContext context, LoginState state) {
-        if (state is LoginSuccess) {
-          hardNavigate(context, Memos());
-        }
-      }, builder: (BuildContext context, LoginState state) {
-        final LoginBloc loginBloc = BlocProvider.of<LoginBloc>(context);
+        listener: (BuildContext context, LoginState state) {
+          if (state is LoginSuccess) {
+            hardNavigate(context, Home());
+          }
+        },
+        builder: (BuildContext context, LoginState state) {
+          final LoginBloc loginBloc = BlocProvider.of<LoginBloc>(context);
 
-        return AppScaffold(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                'You must log yourself in order to use CasseurFlutter',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    color: Colors.black,
-                    decoration: TextDecoration.none,
-                    fontSize: 16,
-                    fontFamily: 'Roboto'),
-              ),
-              Container(
-                height: 40,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  loginBloc.add(LoginInWithAuth0());
-                },
-                child: const Text('Login'),
-              ),
-              Text(errorMessage ?? ''),
-            ],
-          ),
-        );
-      }),
+          return AppScaffold(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const Text(
+                  'You must log yourself in order to use CasseurFlutter',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      color: Colors.black,
+                      decoration: TextDecoration.none,
+                      fontSize: 16,
+                      fontFamily: 'Roboto'),
+                ),
+                Container(
+                  height: 40,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    loginBloc.add(LoginInWithAuth0());
+                  },
+                  child: const Text('Login'),
+                ),
+                Text(errorMessage ?? ''),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

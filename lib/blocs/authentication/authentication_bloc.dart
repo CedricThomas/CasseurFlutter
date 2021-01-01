@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:casseurflutter/models/user.dart';
 import 'package:casseurflutter/services/services.dart';

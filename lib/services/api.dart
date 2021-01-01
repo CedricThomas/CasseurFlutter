@@ -71,7 +71,7 @@ class APIService {
     if (messagingToken == null) {
       return null;
     }
-    return Subscription.fromJson(messagingToken);
+    return Subscription.fromJson(jsonDecode(messagingToken));
   }
 
   Future<User> login() async {
@@ -121,7 +121,7 @@ class APIService {
     if (!(await tryToGetValidCredentials())) {
       throw const AuthenticationException('Not logged in');
     }
-    final String url = 'https://$API_URL/subscription';
+    final String url = '$API_URL/subscription';
     final http.Response response = await http.post(
       url,
       headers: <String, String>{'Authorization': 'Bearer $_idToken', 'Content-type' : 'application/json'},
@@ -139,11 +139,13 @@ class APIService {
     final String messagingToken = await secureStorage.read(key: 'messaging');
     Subscription currentSub;
     if (messagingToken != null) {
-      currentSub = Subscription.fromJson(messagingToken);
+      currentSub = Subscription.fromJson(jsonDecode(messagingToken));
     }
     final FirebaseMessaging messaging = FirebaseMessaging();
-    final bool hasNotificationPermission = await messaging.requestNotificationPermissions();
-    if (!hasNotificationPermission) {
+    final bool hasNotificationPermission = await messaging.requestNotificationPermissions(
+      const IosNotificationSettings(sound: true, badge: true, alert: true, provisional: false),
+    );
+    if (hasNotificationPermission != null && !hasNotificationPermission) {
       throw const NotificationsRefusedException('The notification permission has been specifically denied by the user');
     }
     final String registrationToken = await messaging.getToken();
@@ -152,7 +154,7 @@ class APIService {
     }
     try {
       final Subscription sub = await _internalRegisterNotification(CreateSubscription(registrationId: registrationToken));
-      await secureStorage.write(key: 'messaging', value: sub.toString());
+      await secureStorage.write(key: 'messaging', value: jsonEncode(sub.toJson()));
       return sub;
     } catch (e) {
       throw const NotificationsRegisterException('Unable to register notification on the API');
