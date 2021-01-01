@@ -26,7 +26,16 @@ class AppScaffold extends StatelessWidget {
         ),
         title: const Text('Casseur Flutter'),
       ),
-      body: Container(child: child, constraints: const BoxConstraints(minWidth: double.infinity),),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          Navigator.pushNamed(context, '/createMemo');
+        },
+      ),
+      body: Container(
+        child: child,
+        constraints: const BoxConstraints(minWidth: double.infinity),
+      ),
     );
   }
 }

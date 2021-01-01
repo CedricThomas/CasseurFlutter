@@ -1,6 +1,7 @@
 import 'package:casseurflutter/blocs/authentication/authentication_bloc.dart';
 import 'package:casseurflutter/blocs/notification/notification.dart';
 import 'package:casseurflutter/services/services.dart';
+import 'package:casseurflutter/views/CreateMemo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -62,6 +63,7 @@ class MyApp extends StatelessWidget {
         Home.id: (BuildContext context) => Home(),
         Login.id: (BuildContext context) => Login(),
         Memos.id: (BuildContext context) => Memos(),
+        CreateMemo.id: (BuildContext context) => CreateMemo(),
       },
     );
   }
