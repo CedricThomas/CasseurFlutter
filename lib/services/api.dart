@@ -135,6 +135,23 @@ class APIService {
     }
   }
 
+  Future<void> _internalUnregisterNotification(Subscription old) async {
+    http.Client();
+    if (!(await tryToGetValidCredentials())) {
+      throw const AuthenticationException('Not logged in');
+    }
+    final String subId = old.subscriptionId;
+    final String url = '$API_URL/subscription/$subId';
+    final http.Response response = await http.delete(
+      url,
+      headers: <String, String>{'Authorization': 'Bearer $_idToken'},
+    );
+
+    if (response.statusCode >= 400 || response.statusCode == 0) {
+      throw Exception('Failed to unregister notifications');
+    }
+  }
+
   Future<Subscription> registerNotification() async {
     final String messagingToken = await secureStorage.read(key: 'messaging');
     Subscription currentSub;
@@ -151,6 +168,12 @@ class APIService {
     final String registrationToken = await messaging.getToken();
     if (currentSub != null && registrationToken == currentSub.registrationId) {
       return currentSub;
+    } else if (currentSub != null) {
+      try {
+        await _internalUnregisterNotification(currentSub);
+      } catch (e) {
+        throw const NotificationsRegisterException('Unable to unregister old notification subscription on the API');
+      }
     }
     try {
       final Subscription sub = await _internalRegisterNotification(CreateSubscription(registrationId: registrationToken));

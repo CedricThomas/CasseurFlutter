@@ -31,6 +31,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final AuthenticationBloc authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     final NotificationBloc notificationBloc = BlocProvider.of<NotificationBloc>(context);
 
     return BlocProvider<HomeBloc>(
@@ -62,6 +63,7 @@ class _HomeState extends State<Home> {
             BlocListener<HomeBloc, HomeState>(
               listener: (BuildContext context, HomeState state) {
                 if (state is HomeFirebaseInitialized) {
+                  authenticationBloc.add(HomeReady());
                   setState(() {
                     isFirebaseInitialized = true;
                     validateHome(context);
@@ -100,8 +102,15 @@ class _HomeState extends State<Home> {
         ));
   }
 
+
+  @override
+  void initState() {
+    super.initState();
+    homeBloc.add(HomeLoaded());
+  }
+
   void validateHome(BuildContext context) {
-    if (isFirebaseInitialized == false || isLoggedIn == null) {
+    if (isFirebaseInitialized == false || isFirebaseInitialized == null || isLoggedIn == null) {
       return;
     }
     if (isLoggedIn == false) {

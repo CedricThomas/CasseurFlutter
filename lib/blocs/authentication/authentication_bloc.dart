@@ -17,8 +17,8 @@ class AuthenticationBloc
   @override
   Stream<AuthenticationState> mapEventToState(
       AuthenticationEvent event) async* {
-    if (event is AppLoaded) {
-      yield* _mapAppLoadedToState(event);
+    if (event is HomeReady) {
+      yield* _mapHomeReadyToState(event);
     }
 
     if (event is UserLoggedIn) {
@@ -30,7 +30,7 @@ class AuthenticationBloc
     }
   }
 
-  Stream<AuthenticationState> _mapAppLoadedToState(AppLoaded event) async* {
+  Stream<AuthenticationState> _mapHomeReadyToState(HomeReady event) async* {
     yield AuthenticationLoading();
     try {
       final User currentUser = await _apiService.loadUserFromStorage();

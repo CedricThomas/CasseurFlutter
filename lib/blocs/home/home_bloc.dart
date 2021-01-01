@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'home_event.dart';
 import 'home_state.dart';
@@ -26,6 +27,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Stream<HomeState> _mapHomeLoadedToState(HomeLoaded event) async* {
     yield HomeFirebaseInitialising();
     final FirebaseApp initialization = await Firebase.initializeApp();
+    final FirebaseMessaging messaging = FirebaseMessaging();
+    messaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        // TODO(arthur): handle foreground notification
+      }
+    );
     yield HomeFirebaseInitialized(initialization);
   }
 
