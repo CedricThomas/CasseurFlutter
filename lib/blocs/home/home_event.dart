@@ -18,3 +18,14 @@ class HomeAuthenticationCheckEnd extends HomeEvent {
   @override
   List<Object> get props => <Object>[authenticated];
 }
+
+class HomeNotificationCheckEnd extends HomeEvent {}
+
+class HomeDeclareFailure extends HomeEvent {
+  const HomeDeclareFailure({@required this.message});
+
+  final String message;
+
+  @override
+  List<Object> get props => <Object>[message];
+}

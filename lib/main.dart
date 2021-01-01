@@ -1,9 +1,9 @@
 import 'package:casseurflutter/blocs/authentication/authentication_bloc.dart';
+import 'package:casseurflutter/blocs/notification/notification.dart';
 import 'package:casseurflutter/services/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'blocs/authentication/authentication_event.dart';
 import 'views/Home.dart';
 import 'views/Login.dart';
 import 'views/Memos.dart';
@@ -19,9 +19,15 @@ void main() {
       create: (BuildContext context) {
         final APIService authService =
             RepositoryProvider.of<APIService>(context);
-        return AuthenticationBloc(authService)..add(AppLoaded());
+        return AuthenticationBloc(authService);
       },
-      child: MyApp(),
+      child: BlocProvider<NotificationBloc>(
+        create: (BuildContext context) {
+          final APIService apiService = RepositoryProvider.of<APIService>(context);
+          return NotificationBloc(apiService);
+        },
+        child: MyApp(),
+      ),
     ),
   ));
 }

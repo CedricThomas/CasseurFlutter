@@ -9,8 +9,7 @@ abstract class AuthenticationEvent extends Equatable {
   List<Object> get props => <Object>[];
 }
 
-// Fired just after the app is launched
-class AppLoaded extends AuthenticationEvent {}
+class HomeReady extends AuthenticationEvent {}
 
 // Fired when a user has successfully logged in
 class UserLoggedIn extends AuthenticationEvent {

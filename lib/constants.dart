@@ -3,3 +3,5 @@ const String AUTH0_CLIENT_ID = 'HYdhBMXDFB4x1BCBnCFbqpfllgQ05U5F';
 
 const String AUTH0_REDIRECT_URI = 'com.reyah.casseurflutter://login-callback';
 const String AUTH0_ISSUER = 'https://$AUTH0_DOMAIN';
+
+const String API_URL = 'https://casseur-flutter.herokuapp.com';
