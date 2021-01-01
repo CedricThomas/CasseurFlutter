@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:casseurflutter/exceptions/exceptions.dart';
+import 'package:casseurflutter/models/memo.dart';
 import 'package:casseurflutter/models/models.dart';
 import 'package:casseurflutter/models/profile.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -14,8 +15,8 @@ class APIService {
   APIService()
       : appAuth = FlutterAppAuth(),
         secureStorage = const FlutterSecureStorage(),
-        _idToken = '',
-        _refreshToken = '';
+        _idToken = null,
+        _refreshToken = null;
 
   final FlutterAppAuth appAuth;
   final FlutterSecureStorage secureStorage;
@@ -23,7 +24,6 @@ class APIService {
   String _refreshToken;
 
   Future<Profile> getProfile() async {
-    http.Client();
     if (!(await tryToGetValidCredentials())) {
       throw const AuthenticationException('Not logged in');
     }
@@ -116,15 +116,18 @@ class APIService {
     return User.fromIdToken(response.idToken);
   }
 
-  Future<Subscription> _internalRegisterNotification(CreateSubscription data) async {
-    http.Client();
+  Future<Subscription> _internalRegisterNotification(
+      CreateSubscription data) async {
     if (!(await tryToGetValidCredentials())) {
       throw const AuthenticationException('Not logged in');
     }
     final String url = '$API_URL/subscription';
     final http.Response response = await http.post(
       url,
-      headers: <String, String>{'Authorization': 'Bearer $_idToken', 'Content-type' : 'application/json'},
+      headers: <String, String>{
+        'Authorization': 'Bearer $_idToken',
+        'Content-type': 'application/json'
+      },
       body: json.encode(data),
     );
 
@@ -136,7 +139,6 @@ class APIService {
   }
 
   Future<void> _internalUnregisterNotification(Subscription old) async {
-    http.Client();
     if (!(await tryToGetValidCredentials())) {
       throw const AuthenticationException('Not logged in');
     }
@@ -159,11 +161,14 @@ class APIService {
       currentSub = Subscription.fromJson(jsonDecode(messagingToken));
     }
     final FirebaseMessaging messaging = FirebaseMessaging();
-    final bool hasNotificationPermission = await messaging.requestNotificationPermissions(
-      const IosNotificationSettings(sound: true, badge: true, alert: true, provisional: false),
+    final bool hasNotificationPermission =
+        await messaging.requestNotificationPermissions(
+      const IosNotificationSettings(
+          sound: true, badge: true, alert: true, provisional: false),
     );
     if (hasNotificationPermission != null && !hasNotificationPermission) {
-      throw const NotificationsRefusedException('The notification permission has been specifically denied by the user');
+      throw const NotificationsRefusedException(
+          'The notification permission has been specifically denied by the user');
     }
     final String registrationToken = await messaging.getToken();
     if (currentSub != null && registrationToken == currentSub.registrationId) {
@@ -172,15 +177,115 @@ class APIService {
       try {
         await _internalUnregisterNotification(currentSub);
       } catch (e) {
-        throw const NotificationsRegisterException('Unable to unregister old notification subscription on the API');
+        throw const NotificationsRegisterException(
+            'Unable to unregister old notification subscription on the API');
       }
     }
     try {
-      final Subscription sub = await _internalRegisterNotification(CreateSubscription(registrationId: registrationToken));
-      await secureStorage.write(key: 'messaging', value: jsonEncode(sub.toJson()));
+      final Subscription sub = await _internalRegisterNotification(
+          CreateSubscription(registrationId: registrationToken));
+      await secureStorage.write(
+          key: 'messaging', value: jsonEncode(sub.toJson()));
       return sub;
     } catch (e) {
-      throw const NotificationsRegisterException('Unable to register notification on the API');
+      throw const NotificationsRegisterException(
+          'Unable to register notification on the API');
+    }
+  }
+
+  Future<Memo> createMemo(CreateMemoRequest request) async {
+    if (!(await tryToGetValidCredentials())) {
+      throw const AuthenticationException('Not logged in');
+    }
+    final String url = '$API_URL/memo';
+    final http.Response response = await http.post(
+      url,
+      headers: <String, String>{
+        'Authorization': 'Bearer $_idToken',
+        'Content-type': 'application/json',
+      },
+      body: request.toJson(),
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return Memo.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to create memo');
+    }
+  }
+
+  Future<Memo> updateMemo(UpdateMemoRequest request, String id) async {
+    if (!(await tryToGetValidCredentials())) {
+      throw const AuthenticationException('Not logged in');
+    }
+    final String url = '$API_URL/memo/$id';
+    final http.Response response = await http.put(
+      url,
+      headers: <String, String>{
+        'Authorization': 'Bearer $_idToken',
+        'Content-type': 'application/json',
+      },
+      body: request.toJson(),
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return Memo.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to update memo');
+    }
+  }
+
+  Future<void> deleteMemo(String id) async {
+    if (!(await tryToGetValidCredentials())) {
+      throw const AuthenticationException('Not logged in');
+    }
+    final String url = '$API_URL/memo/$id';
+    final http.Response response = await http.delete(
+      url,
+      headers: <String, String>{
+        'Authorization': 'Bearer $_idToken',
+      },
+    );
+    if (response.statusCode >= 300 || response.statusCode == 0) {
+      throw Exception('Failed to delete memo');
+    }
+  }
+
+  Future<Memo> getMemo(String id) async {
+    if (!(await tryToGetValidCredentials())) {
+      throw const AuthenticationException('Not logged in');
+    }
+    final String url = '$API_URL/memo/$id';
+    final http.Response response = await http.get(
+      url,
+      headers: <String, String>{
+        'Authorization': 'Bearer $_idToken',
+      },
+    );
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return Memo.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to update memo');
+    }
+  }
+
+  Future<List<Memo>> listMemos() async {
+    if (!(await tryToGetValidCredentials())) {
+      throw const AuthenticationException('Not logged in');
+    }
+    final String url = '$API_URL/memo';
+    final http.Response response = await http.get(
+      url,
+      headers: <String, String>{
+        'Authorization': 'Bearer $_idToken',
+      },
+    );
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final List<dynamic> i = json.decode(response.body) as List<dynamic>;
+      return List<Memo>.from(
+          i.map<Memo>((dynamic model) => Memo.fromJson(model)));
+    } else {
+      throw Exception('Failed to update memo');
     }
   }
 }

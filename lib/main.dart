@@ -23,7 +23,8 @@ void main() {
       },
       child: BlocProvider<NotificationBloc>(
         create: (BuildContext context) {
-          final APIService apiService = RepositoryProvider.of<APIService>(context);
+          final APIService apiService =
+              RepositoryProvider.of<APIService>(context);
           return NotificationBloc(apiService);
         },
         child: MyApp(),
@@ -33,7 +34,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  // This widget is the root of your apPplication.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
