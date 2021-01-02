@@ -1,5 +1,6 @@
 import 'package:casseurflutter/blocs/memos/memos.dart';
 import 'package:casseurflutter/services/api.dart';
+import 'package:casseurflutter/widgets/memos/fabCreateMemo.dart';
 import 'package:casseurflutter/widgets/scaffold/appbar/leading.dart';
 import 'package:casseurflutter/widgets/scaffold/appbar/title.dart';
 import 'package:casseurflutter/widgets/scaffold/drawer/default.dart';
@@ -23,6 +24,7 @@ class MemosScaffold extends StatelessWidget {
           leading: AppBarLeading(),
           title: AppBarTitle(),
         ),
+        floatingActionButton: FabCreateMemo(),
         body: Container(
           child: child,
           constraints: const BoxConstraints(minWidth: double.infinity),
