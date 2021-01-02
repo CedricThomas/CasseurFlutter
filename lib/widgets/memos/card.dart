@@ -15,15 +15,21 @@ class MemoCard extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: <Widget>[
-              Row(children: <Widget>[
-                Flexible(
-                  child: Text(
-                    memo.title,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 30.0),
-                  ),
-                ),
-              ]),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Flexible(
+                      child: Text(
+                        memo.title,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 30.0),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () => edit(memo),
+                    ),
+                  ]),
               Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: Row(children: <Widget>[
@@ -67,11 +73,6 @@ class MemoCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                  const Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () => edit(memo),
-                  ),
                 ],
               )
             ],

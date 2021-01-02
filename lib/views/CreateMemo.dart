@@ -78,6 +78,7 @@ class _CreateMemo extends State<CreateMemo> {
         return _memoBloc;
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: const Text('Create new memo'),
         ),
