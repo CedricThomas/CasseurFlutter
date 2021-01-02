@@ -2,7 +2,7 @@ import 'package:casseurflutter/blocs/authentication/authentication.dart';
 import 'package:casseurflutter/blocs/login/login.dart';
 import 'package:casseurflutter/services/services.dart';
 import 'package:casseurflutter/views/utils.dart';
-import 'package:casseurflutter/widgets/scaffold.dart';
+import 'package:casseurflutter/widgets/scaffold/default.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,7 +40,7 @@ class _LoginState extends State<Login> {
         builder: (BuildContext context, LoginState state) {
           final LoginBloc loginBloc = BlocProvider.of<LoginBloc>(context);
 
-          return AppScaffold(
+          return DefaultScaffold(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[

@@ -23,7 +23,8 @@ void main() {
       },
       child: BlocProvider<NotificationBloc>(
         create: (BuildContext context) {
-          final APIService apiService = RepositoryProvider.of<APIService>(context);
+          final APIService apiService =
+              RepositoryProvider.of<APIService>(context);
           return NotificationBloc(apiService);
         },
         child: MyApp(),

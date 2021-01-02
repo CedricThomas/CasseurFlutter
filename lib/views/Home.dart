@@ -6,12 +6,10 @@ import 'package:casseurflutter/blocs/notification/notification.dart';
 import 'package:casseurflutter/views/Login.dart';
 import 'package:casseurflutter/views/Memos.dart';
 import 'package:casseurflutter/views/utils.dart';
-import 'package:casseurflutter/widgets/scaffold.dart';
+import 'package:casseurflutter/widgets/scaffold/default.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Home extends StatefulWidget {
   static const String id = '/splashscreen';
@@ -26,13 +24,13 @@ class _HomeState extends State<Home> {
   bool isNotificationRegistered;
   String errorMessage;
   final HomeBloc homeBloc = HomeBloc();
-  final FlutterAppAuth appAuth = FlutterAppAuth();
-  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   @override
   Widget build(BuildContext context) {
-    final AuthenticationBloc authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
-    final NotificationBloc notificationBloc = BlocProvider.of<NotificationBloc>(context);
+    final AuthenticationBloc authenticationBloc =
+        BlocProvider.of<AuthenticationBloc>(context);
+    final NotificationBloc notificationBloc =
+        BlocProvider.of<NotificationBloc>(context);
 
     return BlocProvider<HomeBloc>(
         create: (BuildContext context) => homeBloc,
@@ -91,7 +89,7 @@ class _HomeState extends State<Home> {
               },
             ),
           ],
-          child: AppScaffold(
+          child: DefaultScaffold(
               child: Center(
                   child: errorMessage != null
                       ? Text(
@@ -102,7 +100,6 @@ class _HomeState extends State<Home> {
         ));
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -110,7 +107,9 @@ class _HomeState extends State<Home> {
   }
 
   void validateHome(BuildContext context) {
-    if (isFirebaseInitialized == false || isFirebaseInitialized == null || isLoggedIn == null) {
+    if (isFirebaseInitialized == false ||
+        isFirebaseInitialized == null ||
+        isLoggedIn == null) {
       return;
     }
     if (isLoggedIn == false) {
