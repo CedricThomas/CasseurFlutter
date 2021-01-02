@@ -58,7 +58,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   }
 
   Future<dynamic> onSelectNotification(String payload) async {
-    print('test mec');
+    // Get.to<>();
   }
 
   Stream<NotificationState> _mapRegisterNotificationToState(
@@ -76,7 +76,6 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
               iOS: initializationSettingsIOS);
       _flutterLocalNotificationsPlugin.initialize(initializationSettings,
           onSelectNotification: onSelectNotification);
-
       yield NotificationRegistered();
       yield NotificationInitial();
     } on NotificationsRefusedException catch (e) {

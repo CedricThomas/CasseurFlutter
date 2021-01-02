@@ -5,11 +5,11 @@ import 'package:casseurflutter/blocs/home/home_state.dart';
 import 'package:casseurflutter/blocs/notification/notification.dart';
 import 'package:casseurflutter/views/Login.dart';
 import 'package:casseurflutter/views/Memos.dart';
-import 'package:casseurflutter/views/utils.dart';
 import 'package:casseurflutter/widgets/scaffold/default.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 class Home extends StatefulWidget {
   static const String id = '/splashscreen';
@@ -109,9 +109,9 @@ class _HomeState extends State<Home> {
       return;
     }
     if (isLoggedIn == false) {
-      hardNavigate(context, Login());
+      Get.off<Login>(Login());
     } else if (isNotificationRegistered == true) {
-      hardNavigate(context, Memos());
+      Get.off<Memos>(Memos());
     }
   }
 }

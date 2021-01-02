@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:casseurflutter/blocs/notification/notification_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -34,9 +36,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     messaging.configure(onMessage: (Map<String, dynamic> message) async {
       final Map<String, String> notif = Map<String, String>.from(
           message['notification'] as Map<dynamic, dynamic>);
-      // TODO(Cedric): handle payload ?
+      final String data = jsonEncode(message['data'] as Map<dynamic, dynamic>);
       notificationBloc.showNotification(
-          1234, notif['title'], notif['body'], '');
+          1234, notif['title'], notif['body'], data);
     });
     yield HomeFirebaseInitialized(initialization);
   }
