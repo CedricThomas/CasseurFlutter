@@ -193,31 +193,6 @@ class APIService {
     }
   }
 
-  Future<Memo> createMemo(CreateMemoRequest request) async {
-    if (!(await tryToGetValidCredentials())) {
-      throw const AuthenticationException('Not logged in');
-    }
-    print('before post');
-    print(json.encode(request.toJson()));
-    final String url = '$API_URL/memo';
-    final http.Response response = await http.post(
-      url,
-      headers: <String, String>{
-        'Authorization': 'Bearer $_idToken',
-        'Content-type': 'application/json',
-      },
-      body: json.encode(request.toJson()),
-    );
-    print('after post');
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return Memo.fromJson(jsonDecode(response.body));
-    } else if (response.statusCode >= 400 && response.statusCode < 500) {
-      throw Exception(jsonDecode(response.body).toString());
-    } else {
-      throw Exception('Failed to create memo');
-    }
-  }
-
   Future<Memo> updateMemo(UpdateMemoRequest request, String id) async {
     if (!(await tryToGetValidCredentials())) {
       throw const AuthenticationException('Not logged in');

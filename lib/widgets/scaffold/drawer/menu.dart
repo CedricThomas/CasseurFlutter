@@ -37,7 +37,7 @@ class DrawerMenu extends StatelessWidget {
             accountName: Text(
                 state is AuthenticationAuthenticated ? state.user.name : ''),
             accountEmail: Text(
-                state is AuthenticationAuthenticated ? state.user.name : ''),
+                state is AuthenticationAuthenticated ? state.user.email : ''),
             currentAccountPicture: state is AuthenticationAuthenticated
                 ? Container(
                     decoration: BoxDecoration(
