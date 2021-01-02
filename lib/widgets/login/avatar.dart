@@ -11,7 +11,7 @@ class LoginAvatar extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(30.0),
         child: Image.asset(
-          'assets/icon-dark.png',
+          'assets/login-avatar.png',
           fit: BoxFit.contain,
         ),
       ),
