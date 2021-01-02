@@ -213,10 +213,6 @@ class _CreateMemo extends State<CreateMemo> {
                         onPressed: _onGeolocationAsked,
                         state: _locationButtonState,
                       ),
-                      // ElevatedButton(
-                      //   onPressed: () {},
-                      //   child: const Text('Add a geolocation'),
-                      // ),
                     ],
                   ),
                 ),
