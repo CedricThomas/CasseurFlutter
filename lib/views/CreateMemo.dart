@@ -12,7 +12,11 @@ class _CreateMemo extends State<CreateMemo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Casseur Flutter'),
+        title: const Text('Create new memo'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.done),
       ),
       body: const SafeArea(
         child: Center(

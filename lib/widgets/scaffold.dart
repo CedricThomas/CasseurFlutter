@@ -1,3 +1,4 @@
+import 'package:casseurflutter/widgets/fabCreateMemo.dart';
 import 'package:flutter/material.dart';
 
 import 'drawer.dart';
@@ -26,12 +27,13 @@ class AppScaffold extends StatelessWidget {
         ),
         title: const Text('Casseur Flutter'),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          Navigator.pushNamed(context, '/createMemo');
-        },
-      ),
+      floatingActionButton: FabCreateMemo(),
+      // floatingActionButton: FloatingActionButton(
+      //   child: const Icon(Icons.add),
+      //   onPressed: () {
+      //     Navigator.pushNamed(context, '/createMemo');
+      //   },
+      // ),
       body: Container(
         child: child,
         constraints: const BoxConstraints(minWidth: double.infinity),
