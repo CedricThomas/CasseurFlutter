@@ -1,7 +1,11 @@
+import 'package:casseurflutter/blocs/memos/memos.dart';
 import 'package:casseurflutter/views/CreateMemo.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FabCreateMemo extends StatefulWidget {
+  const FabCreateMemo();
+
   @override
   _FabCreateMemo createState() => _FabCreateMemo();
 }
@@ -19,6 +23,7 @@ class _FabCreateMemo extends State<FabCreateMemo> {
         _fabKey.currentContext.findRenderObject() as RenderBox;
     final Size fabSize = fabRenderBox.size;
     final Offset fabOffset = fabRenderBox.localToGlobal(Offset.zero);
+    final MemosBloc memosBloc = BlocProvider.of<MemosBloc>(context);
 
     Navigator.of(context)
         .push(
@@ -34,7 +39,16 @@ class _FabCreateMemo extends State<FabCreateMemo> {
                 _buildTransition(child, animation, fabSize, fabOffset),
           ),
         )
-        .then((CreateMemo value) => <void>{setState(() => _fabVisible = true)});
+        .then(
+          (CreateMemo value) => <void>{
+            setState(
+              () {
+                _fabVisible = true;
+                memosBloc.add(FetchMemos());
+              },
+            )
+          },
+        );
   }
 
   Widget _buildTransition(
