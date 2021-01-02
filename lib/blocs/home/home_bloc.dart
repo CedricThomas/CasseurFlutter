@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:casseurflutter/blocs/notification/notification_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -6,7 +7,9 @@ import 'home_event.dart';
 import 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  HomeBloc() : super(HomeInitial());
+  HomeBloc(this.notificationBloc) : super(HomeInitial());
+
+  final NotificationBloc notificationBloc;
 
   @override
   Stream<HomeState> mapEventToState(HomeEvent event) async* {
@@ -28,11 +31,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     yield HomeFirebaseInitialising();
     final FirebaseApp initialization = await Firebase.initializeApp();
     final FirebaseMessaging messaging = FirebaseMessaging();
-    messaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        // TODO(arthur): handle foreground notification
-      }
-    );
+    messaging.configure(onMessage: (Map<String, dynamic> message) async {
+      final Map<String, String> notif = Map<String, String>.from(
+          message['notification'] as Map<dynamic, dynamic>);
+      // TODO(Cedric): handle payload ?
+      notificationBloc.showNotification(
+          1234, notif['title'], notif['body'], '');
+    });
     yield HomeFirebaseInitialized(initialization);
   }
 
@@ -50,7 +55,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     yield HomeNotificationRegistered();
   }
 
-  Stream<HomeState> _mapHomeDeclareFailureToState(HomeDeclareFailure event) async* {
+  Stream<HomeState> _mapHomeDeclareFailureToState(
+      HomeDeclareFailure event) async* {
     yield HomeFailure(error: event.message);
   }
 }

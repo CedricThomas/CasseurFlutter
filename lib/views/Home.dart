@@ -23,7 +23,6 @@ class _HomeState extends State<Home> {
   bool isLoggedIn;
   bool isNotificationRegistered;
   String errorMessage;
-  final HomeBloc homeBloc = HomeBloc();
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +32,13 @@ class _HomeState extends State<Home> {
         BlocProvider.of<NotificationBloc>(context);
 
     return BlocProvider<HomeBloc>(
-        create: (BuildContext context) => homeBloc,
+        create: (BuildContext context) =>
+            HomeBloc(notificationBloc)..add(HomeLoaded()),
         child: MultiBlocListener(
           listeners: <BlocListener<Bloc<Equatable, Equatable>, Equatable>>[
             BlocListener<AuthenticationBloc, AuthenticationState>(
               listener: (BuildContext context, AuthenticationState state) {
+                final HomeBloc homeBloc = BlocProvider.of<HomeBloc>(context);
                 if (state is AuthenticationAuthenticated) {
                   homeBloc.add(
                       const HomeAuthenticationCheckEnd(authenticated: true));
@@ -50,6 +51,7 @@ class _HomeState extends State<Home> {
             ),
             BlocListener<NotificationBloc, NotificationState>(
                 listener: (BuildContext context, NotificationState state) {
+              final HomeBloc homeBloc = BlocProvider.of<HomeBloc>(context);
               if (state is NotificationRegistered) {
                 homeBloc.add(HomeNotificationCheckEnd());
               } else if (state is NotificationFailure) {
@@ -98,12 +100,6 @@ class _HomeState extends State<Home> {
                         )
                       : const CircularProgressIndicator())),
         ));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    homeBloc.add(HomeLoaded());
   }
 
   void validateHome(BuildContext context) {
