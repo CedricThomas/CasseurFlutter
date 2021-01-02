@@ -5,11 +5,11 @@ import 'package:casseurflutter/blocs/home/home_state.dart';
 import 'package:casseurflutter/blocs/notification/notification.dart';
 import 'package:casseurflutter/views/Login.dart';
 import 'package:casseurflutter/views/Memos.dart';
-import 'package:casseurflutter/views/utils.dart';
 import 'package:casseurflutter/widgets/scaffold/default.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 class Home extends StatefulWidget {
   static const String id = '/splashscreen';
@@ -23,7 +23,6 @@ class _HomeState extends State<Home> {
   bool isLoggedIn;
   bool isNotificationRegistered;
   String errorMessage;
-  final HomeBloc homeBloc = HomeBloc();
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +32,13 @@ class _HomeState extends State<Home> {
         BlocProvider.of<NotificationBloc>(context);
 
     return BlocProvider<HomeBloc>(
-        create: (BuildContext context) => homeBloc,
+        create: (BuildContext context) =>
+            HomeBloc(notificationBloc)..add(HomeLoaded()),
         child: MultiBlocListener(
           listeners: <BlocListener<Bloc<Equatable, Equatable>, Equatable>>[
             BlocListener<AuthenticationBloc, AuthenticationState>(
               listener: (BuildContext context, AuthenticationState state) {
+                final HomeBloc homeBloc = BlocProvider.of<HomeBloc>(context);
                 if (state is AuthenticationAuthenticated) {
                   homeBloc.add(
                       const HomeAuthenticationCheckEnd(authenticated: true));
@@ -50,6 +51,7 @@ class _HomeState extends State<Home> {
             ),
             BlocListener<NotificationBloc, NotificationState>(
                 listener: (BuildContext context, NotificationState state) {
+              final HomeBloc homeBloc = BlocProvider.of<HomeBloc>(context);
               if (state is NotificationRegistered) {
                 homeBloc.add(HomeNotificationCheckEnd());
               } else if (state is NotificationFailure) {
@@ -100,12 +102,6 @@ class _HomeState extends State<Home> {
         ));
   }
 
-  @override
-  void initState() {
-    super.initState();
-    homeBloc.add(HomeLoaded());
-  }
-
   void validateHome(BuildContext context) {
     if (isFirebaseInitialized == false ||
         isFirebaseInitialized == null ||
@@ -113,9 +109,9 @@ class _HomeState extends State<Home> {
       return;
     }
     if (isLoggedIn == false) {
-      hardNavigate(context, Login());
+      Get.off<Login>(Login());
     } else if (isNotificationRegistered == true) {
-      hardNavigate(context, Memos());
+      Get.off<Memos>(Memos());
     }
   }
 }
