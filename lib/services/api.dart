@@ -183,4 +183,25 @@ class APIService {
       throw const NotificationsRegisterException('Unable to register notification on the API');
     }
   }
+
+  Future<Memo> createMemo(CreateMemoRequest memoToCreate) async {
+    http.Client();
+    if (!(await tryToGetValidCredentials())) {
+      throw const AuthenticationException('Not logged in');
+    }
+    final String url = '$API_URL/memo';
+    final http.Response response = await http.post(
+      url,
+      headers: <String, String>{'Authorization': 'Bearer $_idToken', 'Content-type' : 'application/json'},
+      body: json.encode(memoToCreate),
+    );
+
+    if (response.statusCode < 400 && response.statusCode != 0) {
+      return Memo.fromJson(jsonDecode(response.body));
+    } else if (response.statusCode == 400) {
+      throw Exception('Invalid memo');
+    } else {
+      throw Exception('Failed to create memo');
+    }
+  }
 }

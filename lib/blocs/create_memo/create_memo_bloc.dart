@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
+import 'package:casseurflutter/models/models.dart';
 import 'package:casseurflutter/services/services.dart';
 
 import 'create_memo.dart';
@@ -24,10 +23,11 @@ class CreateMemoBloc extends Bloc<CreateMemoEvent, CreateMemoState> {
   Stream<CreateMemoState> _mapStartCreateMemoToState(
       StartCreateMemo event) async* {
     yield CreateMemoCreating();
-    log('will create a memo');
-    log(event.memo.title);
-    log(event.memo.content);
-    await Future<void>.delayed(const Duration(seconds: 5));
-    yield CreateMemoCreated(memo: null);
+    try {
+      final Memo memo = await _apiService.createMemo(event.memo);
+      yield CreateMemoCreated(memo: memo);
+    } catch (e) {
+      yield CreateMemoFailure(message: 'Could not create memo, ' + e.toString());
+    }
   }
 }
