@@ -9,9 +9,11 @@ class MemosBloc extends Bloc<MemosEvent, MemosState> {
   MemosBloc(APIService apiService)
       : assert(apiService != null),
         _apiService = apiService,
+        _memos = List<Memo>.empty(),
         super(MemosInitial());
 
   final APIService _apiService;
+  List<Memo> _memos;
 
   @override
   Stream<MemosState> mapEventToState(MemosEvent event) async* {
@@ -26,8 +28,8 @@ class MemosBloc extends Bloc<MemosEvent, MemosState> {
   Stream<MemosState> _mapFetchMemos(FetchMemos event) async* {
     try {
       yield MemosLoading();
-      final List<Memo> memos = await _apiService.listMemos();
-      yield MemosLoaded(memos);
+      _memos = await _apiService.listMemos();
+      yield MemosLoaded(_memos);
     } catch (err) {
       yield MemosFailure(
           error: err.message as String ?? 'An unknown error occured');
@@ -37,6 +39,7 @@ class MemosBloc extends Bloc<MemosEvent, MemosState> {
   Stream<MemosState> _mapDeleteMemo(DeleteMemo event) async* {
     try {
       await _apiService.deleteMemo(event.id);
+      _memos.removeWhere((Memo element) => element.id == event.id);
     } catch (err) {
       yield MemosFailure(
           error: err.message as String ?? 'An unknown error occured');

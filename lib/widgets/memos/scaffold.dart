@@ -24,7 +24,7 @@ class MemosScaffold extends StatelessWidget {
           leading: AppBarLeading(),
           title: AppBarTitle(),
         ),
-        floatingActionButton: FabCreateMemo(),
+        floatingActionButton: const FabCreateMemo(),
         body: Container(
           child: child,
           constraints: const BoxConstraints(minWidth: double.infinity),
