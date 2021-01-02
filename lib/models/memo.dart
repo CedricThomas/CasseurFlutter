@@ -18,11 +18,19 @@ class Location extends Equatable {
 class CreateMemoRequest extends Equatable {
   const CreateMemoRequest(this.title, this.content, this.location);
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
+  Map<String, dynamic> toJson() {
+    if (location == null) {
+      return <String, dynamic>{
         'title': title,
         'content': content,
-        'location': location.toJson(),
       };
+    }
+    return <String, dynamic>{
+      'title': title,
+      'content': content,
+      'location': location.toJson(),
+    };
+  }
 
   final String title;
   final String content;
@@ -35,11 +43,19 @@ class CreateMemoRequest extends Equatable {
 class UpdateMemoRequest extends Equatable {
   const UpdateMemoRequest(this.title, this.content, this.location);
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
+  Map<String, dynamic> toJson() {
+    if (location == null) {
+      return <String, dynamic>{
         'title': title,
         'content': content,
-        'location': location.toJson(),
       };
+    }
+    return <String, dynamic>{
+      'title': title,
+      'content': content,
+      'location': location.toJson(),
+    };
+  }
 
   final String title;
   final String content;

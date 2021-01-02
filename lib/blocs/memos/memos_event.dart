@@ -6,3 +6,12 @@ abstract class MemosEvent extends Equatable {
 }
 
 class FetchMemos extends MemosEvent {}
+
+class DeleteMemo extends MemosEvent {
+  DeleteMemo(this.id);
+
+  final String id;
+
+  @override
+  List<Object> get props => <Object>[id];
+}

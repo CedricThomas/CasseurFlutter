@@ -16,14 +16,28 @@ class MemosBloc extends Bloc<MemosEvent, MemosState> {
   @override
   Stream<MemosState> mapEventToState(MemosEvent event) async* {
     if (event is FetchMemos) {
-      yield* _mapLoginInWithAuth0ToState(event);
+      yield* _mapFetchMemos(event);
+    }
+    if (event is DeleteMemo) {
+      yield* _mapDeleteMemo(event);
     }
   }
 
-  Stream<MemosState> _mapLoginInWithAuth0ToState(FetchMemos event) async* {
+  Stream<MemosState> _mapFetchMemos(FetchMemos event) async* {
     try {
+      yield MemosLoading();
       final List<Memo> memos = await _apiService.listMemos();
-      yield MemosLoaded(memos: memos);
+      yield MemosLoaded(memos);
+    } catch (err) {
+      yield MemosFailure(
+          error: err.message as String ?? 'An unknown error occured');
+    }
+  }
+
+  Stream<MemosState> _mapDeleteMemo(DeleteMemo event) async* {
+    try {
+      await _apiService.deleteMemo(event.id);
+      // yield MemosLoaded(memos);
     } catch (err) {
       yield MemosFailure(
           error: err.message as String ?? 'An unknown error occured');

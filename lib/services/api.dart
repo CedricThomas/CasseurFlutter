@@ -197,6 +197,8 @@ class APIService {
     if (!(await tryToGetValidCredentials())) {
       throw const AuthenticationException('Not logged in');
     }
+    print('before post');
+    print(json.encode(request.toJson()));
     final String url = '$API_URL/memo';
     final http.Response response = await http.post(
       url,
@@ -204,11 +206,13 @@ class APIService {
         'Authorization': 'Bearer $_idToken',
         'Content-type': 'application/json',
       },
-      body: request.toJson(),
+      body: json.encode(request.toJson()),
     );
-
+    print('after post');
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return Memo.fromJson(jsonDecode(response.body));
+    } else if (response.statusCode >= 400 && response.statusCode < 500) {
+      throw Exception(jsonDecode(response.body).toString());
     } else {
       throw Exception('Failed to create memo');
     }
@@ -230,6 +234,8 @@ class APIService {
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return Memo.fromJson(jsonDecode(response.body));
+    } else if (response.statusCode >= 400 && response.statusCode < 500) {
+      throw Exception(response.body.toString());
     } else {
       throw Exception('Failed to update memo');
     }
@@ -285,7 +291,7 @@ class APIService {
       return List<Memo>.from(
           i.map<Memo>((dynamic model) => Memo.fromJson(model)));
     } else {
-      throw Exception('Failed to update memo');
+      throw Exception('Failed to list memos');
     }
   }
 }

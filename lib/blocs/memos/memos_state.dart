@@ -11,13 +11,24 @@ abstract class MemosState extends Equatable {
 
 class MemosInitial extends MemosState {}
 
+class MemosLoading extends MemosState {}
+
 class MemosLoaded extends MemosState {
-  const MemosLoaded({@required this.memos});
+  const MemosLoaded(this.memos);
 
   final List<Memo> memos;
 
   @override
   List<Object> get props => <Object>[memos];
+}
+
+class MemoRemoved extends MemosState {
+  const MemoRemoved(this.memo);
+
+  final Memo memo;
+
+  @override
+  List<Object> get props => <Object>[memo];
 }
 
 class MemosFailure extends MemosState {
