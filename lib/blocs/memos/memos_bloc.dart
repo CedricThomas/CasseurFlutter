@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:casseurflutter/services/services.dart';
 
-import 'memo_event.dart';
-import 'memo_state.dart';
+import 'memos_event.dart';
+import 'memos_state.dart';
 
 class MemoBloc extends Bloc<MemoEvent, MemoState> {
   MemoBloc(APIService apiService)

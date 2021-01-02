@@ -1,5 +1,4 @@
-import 'package:casseurflutter/blocs/memo/memo_bloc.dart';
-import 'package:casseurflutter/blocs/memo/memo_event.dart';
+import 'package:casseurflutter/blocs/memos/memos.dart';
 import 'package:casseurflutter/widgets/memos/scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
