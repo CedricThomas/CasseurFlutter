@@ -1,8 +1,5 @@
-import 'package:casseurflutter/blocs/memos/memos.dart';
-import 'package:casseurflutter/blocs/memos/memos_bloc.dart';
 import 'package:casseurflutter/models/models.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MemoCard extends StatelessWidget {
   const MemoCard({@required this.memo, @required this.edit});
@@ -12,7 +9,6 @@ class MemoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final MemosBloc memosBloc = BlocProvider.of<MemosBloc>(context);
     return Container(
       child: Card(
         child: Padding(
@@ -56,7 +52,7 @@ class MemoCard extends StatelessWidget {
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                        children: <Widget>[
                           const Icon(Icons.location_pin),
                           Expanded(
                             child: Text(
