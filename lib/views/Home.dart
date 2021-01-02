@@ -6,7 +6,7 @@ import 'package:casseurflutter/blocs/notification/notification.dart';
 import 'package:casseurflutter/views/Login.dart';
 import 'package:casseurflutter/views/Memos.dart';
 import 'package:casseurflutter/views/utils.dart';
-import 'package:casseurflutter/widgets/scaffold.dart';
+import 'package:casseurflutter/widgets/scaffold/default.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -89,7 +89,7 @@ class _HomeState extends State<Home> {
               },
             ),
           ],
-          child: AppScaffold(
+          child: DefaultScaffold(
               child: Center(
                   child: errorMessage != null
                       ? Text(

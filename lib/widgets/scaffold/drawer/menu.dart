@@ -1,10 +1,9 @@
 import 'package:casseurflutter/blocs/authentication/authentication.dart';
+import 'package:casseurflutter/views/Login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../views/Login.dart';
-
-class AppDrawer extends StatelessWidget {
+class DrawerMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AuthenticationBloc authBloc =

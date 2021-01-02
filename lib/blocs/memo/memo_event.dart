@@ -5,4 +5,4 @@ abstract class MemoEvent extends Equatable {
   List<Object> get props => <Object>[];
 }
 
-class MemoTrigger extends MemoEvent {}
+class MemoLoaded extends MemoEvent {}

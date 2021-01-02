@@ -14,7 +14,7 @@ class MemoBloc extends Bloc<MemoEvent, MemoState> {
 
   @override
   Stream<MemoState> mapEventToState(MemoEvent event) async* {
-    if (event is MemoTrigger) {
+    if (event is MemoLoaded) {
       _apiService.listMemos();
     }
   }
