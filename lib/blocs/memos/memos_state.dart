@@ -1,17 +1,27 @@
+import 'package:casseurflutter/models/models.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-abstract class MemoState extends Equatable {
-  const MemoState();
+abstract class MemosState extends Equatable {
+  const MemosState();
 
   @override
   List<Object> get props => <Object>[];
 }
 
-class MemoInitial extends MemoState {}
+class MemosInitial extends MemosState {}
 
-class MemoFailure extends MemoState {
-  const MemoFailure({@required this.error});
+class MemosLoaded extends MemosState {
+  const MemosLoaded({@required this.memos});
+
+  final List<Memo> memos;
+
+  @override
+  List<Object> get props => <Object>[memos];
+}
+
+class MemosFailure extends MemosState {
+  const MemosFailure({@required this.error});
 
   final String error;
 

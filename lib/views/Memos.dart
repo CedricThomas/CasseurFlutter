@@ -13,19 +13,14 @@ class Memos extends StatefulWidget {
 class _MemosState extends State<Memos> {
   @override
   Widget build(BuildContext context) {
-    return MemosScaffold(child: Builder(builder: (BuildContext context) {
-      final MemoBloc memoBloc = BlocProvider.of<MemoBloc>(context);
+    return MemosScaffold(child: BlocBuilder<MemosBloc, MemosState>(
+        builder: (BuildContext context, MemosState state) {
+      // final MemosBloc memoBloc = BlocProvider.of<MemosBloc>(context);
+      if (state is MemosLoaded) {}
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          const Text('Memos'),
-          const CircularProgressIndicator(),
-          ElevatedButton(
-            onPressed: () {
-              memoBloc.add(MemoLoaded());
-            },
-            child: const Text('Test'),
-          ),
+        children: const <Widget>[
+          CircularProgressIndicator(),
         ],
       );
     }));

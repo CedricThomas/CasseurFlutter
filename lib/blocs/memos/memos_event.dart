@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-abstract class MemoEvent extends Equatable {
+abstract class MemosEvent extends Equatable {
   @override
   List<Object> get props => <Object>[];
 }
 
-class MemoLoaded extends MemoEvent {}
+class FetchMemos extends MemosEvent {}

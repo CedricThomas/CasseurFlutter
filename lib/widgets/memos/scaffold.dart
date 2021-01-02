@@ -14,8 +14,9 @@ class MemosScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final APIService apiService = RepositoryProvider.of<APIService>(context);
-    return BlocProvider<MemoBloc>(
-      create: (BuildContext context) => MemoBloc(apiService)..add(MemoLoaded()),
+    return BlocProvider<MemosBloc>(
+      create: (BuildContext context) =>
+          MemosBloc(apiService)..add(FetchMemos()),
       child: Scaffold(
         drawer: DefaultDrawer(),
         appBar: AppBar(
