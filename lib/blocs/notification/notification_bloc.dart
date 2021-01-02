@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:casseurflutter/exceptions/exceptions.dart';
+import 'package:casseurflutter/models/subscription.dart';
 import 'package:casseurflutter/services/services.dart';
 
 import 'notification_event.dart';
@@ -24,7 +25,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       RegisterNotification event) async* {
     yield NotificationRegistering();
     try {
-      await _apiService.registerNotification();
+      final Subscription sub = await _apiService.registerNotification();
+      print(sub.registrationId);
       yield NotificationRegistered();
       yield NotificationInitial();
     } on NotificationsRefusedException catch (e) {
