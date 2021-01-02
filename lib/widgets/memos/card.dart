@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MemoCard extends StatelessWidget {
-  const MemoCard({@required this.memo});
+  const MemoCard({@required this.memo, @required this.edit});
 
   final Memo memo;
+  final void Function(Memo memo) edit;
 
   @override
   Widget build(BuildContext context) {
@@ -72,8 +73,8 @@ class MemoCard extends StatelessWidget {
                     ),
                   const Spacer(),
                   IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () => memosBloc.add(DeleteMemo(memo.id)),
+                    icon: const Icon(Icons.edit),
+                    onPressed: () => edit(memo),
                   ),
                 ],
               )

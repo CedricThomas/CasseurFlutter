@@ -37,7 +37,6 @@ class MemosBloc extends Bloc<MemosEvent, MemosState> {
   Stream<MemosState> _mapDeleteMemo(DeleteMemo event) async* {
     try {
       await _apiService.deleteMemo(event.id);
-      // yield MemosLoaded(memos);
     } catch (err) {
       yield MemosFailure(
           error: err.message as String ?? 'An unknown error occured');

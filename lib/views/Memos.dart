@@ -1,4 +1,5 @@
 import 'package:casseurflutter/blocs/memos/memos.dart';
+import 'package:casseurflutter/models/memo.dart';
 import 'package:casseurflutter/widgets/memos/card.dart';
 import 'package:casseurflutter/widgets/memos/scaffold.dart';
 import 'package:flutter/material.dart';
@@ -26,9 +27,21 @@ class _MemosState extends State<Memos> {
           child: RefreshIndicator(
             child: ListView.builder(
               itemCount: state.memos.length,
-              itemBuilder: (BuildContext context, int index) => MemoCard(
-                memo: state.memos[index],
-              ),
+              itemBuilder: (BuildContext context, int index) {
+                final Memo memo = state.memos[index];
+                return Dismissible(
+                  key: Key(memo.id),
+                  onDismissed: (DismissDirection direction) {
+                    memoBloc.add(DeleteMemo(memo.id));
+                    Scaffold.of(context).showSnackBar(
+                        const SnackBar(content: Text('Memo dismissed')));
+                  },
+                  child: MemoCard(
+                    memo: memo,
+                    edit: (Memo memo) {},
+                  ),
+                );
+              },
             ),
             onRefresh: () => _refreshList(memoBloc),
           ),

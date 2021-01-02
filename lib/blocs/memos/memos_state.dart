@@ -22,15 +22,6 @@ class MemosLoaded extends MemosState {
   List<Object> get props => <Object>[memos];
 }
 
-class MemoRemoved extends MemosState {
-  const MemoRemoved(this.memo);
-
-  final Memo memo;
-
-  @override
-  List<Object> get props => <Object>[memo];
-}
-
 class MemosFailure extends MemosState {
   const MemosFailure({@required this.error});
 
