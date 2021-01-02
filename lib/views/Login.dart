@@ -1,12 +1,14 @@
 import 'package:casseurflutter/blocs/authentication/authentication.dart';
 import 'package:casseurflutter/blocs/login/login.dart';
 import 'package:casseurflutter/services/services.dart';
-import 'package:casseurflutter/views/utils.dart';
-import 'package:casseurflutter/widgets/scaffold.dart';
+import 'package:casseurflutter/widgets/login/avatar.dart';
+import 'package:casseurflutter/widgets/login/button.dart';
+import 'package:casseurflutter/widgets/scaffold/default.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get.dart';
 
 import 'Home.dart';
 
@@ -34,36 +36,29 @@ class _LoginState extends State<Login> {
       child: BlocConsumer<LoginBloc, LoginState>(
         listener: (BuildContext context, LoginState state) {
           if (state is LoginSuccess) {
-            hardNavigate(context, Home());
+            Get.off<Home>(Home());
           }
         },
         builder: (BuildContext context, LoginState state) {
           final LoginBloc loginBloc = BlocProvider.of<LoginBloc>(context);
 
-          return AppScaffold(
+          return DefaultScaffold(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const Text(
-                  'You must log yourself in order to use CasseurFlutter',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      color: Colors.black,
-                      decoration: TextDecoration.none,
-                      fontSize: 16,
-                      fontFamily: 'Roboto'),
-                ),
                 Container(
-                  height: 40,
+                  width: MediaQuery.of(context).size.width / 2,
+                  child: LoginAvatar(),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    loginBloc.add(LoginInWithAuth0());
-                  },
-                  child: const Text('Login'),
-                ),
-                Text(errorMessage ?? ''),
+                const SizedBox(height: 300),
+                Container(
+                  width: MediaQuery.of(context).size.width * 4 / 5,
+                  child: LoginButton(
+                    onPressed: () {
+                      loginBloc.add(LoginInWithAuth0());
+                    },
+                  ),
+                )
               ],
             ),
           );

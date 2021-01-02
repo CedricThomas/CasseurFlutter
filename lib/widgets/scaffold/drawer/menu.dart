@@ -1,28 +1,16 @@
 import 'package:casseurflutter/blocs/authentication/authentication.dart';
+import 'package:casseurflutter/views/Login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
-import '../views/Login.dart';
-
-class AppDrawer extends StatelessWidget {
+class DrawerMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AuthenticationBloc authBloc =
         BlocProvider.of<AuthenticationBloc>(context);
-    return BlocConsumer<AuthenticationBloc, AuthenticationState>(
-        listener: (BuildContext context, AuthenticationState state) {
-      if (state is AuthenticationNotAuthenticated) {
-        Navigator.pushReplacement(
-          context,
-          PageRouteBuilder<Login>(
-            pageBuilder: (BuildContext context, Animation<double> animation1,
-                    Animation<double> animation2) =>
-                Login(),
-            transitionDuration: const Duration(seconds: 0),
-          ),
-        );
-      }
-    }, builder: (BuildContext context, AuthenticationState state) {
+    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
+        builder: (BuildContext context, AuthenticationState state) {
       final List<Widget> menu = <Widget>[];
       if (state is AuthenticationAuthenticated) {
         menu.add(
@@ -37,16 +25,7 @@ class AppDrawer extends StatelessWidget {
       } else {
         menu.add(
           ListTile(
-            onTap: () => Navigator.pushReplacement(
-              context,
-              PageRouteBuilder<Login>(
-                pageBuilder: (BuildContext context,
-                        Animation<double> animation1,
-                        Animation<double> animation2) =>
-                    Login(),
-                transitionDuration: const Duration(seconds: 0),
-              ),
-            ),
+            onTap: () => Get.off<Login>(Login()),
             title: const Text('Login'),
             trailing: const Icon(Icons.login),
           ),

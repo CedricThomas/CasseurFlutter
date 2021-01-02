@@ -4,9 +4,9 @@ class Location extends Equatable {
   const Location(this.latitude, this.longitude);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-    'latitude': latitude,
-    'longitude': longitude,
-  };
+        'latitude': latitude,
+        'longitude': longitude,
+      };
 
   final double latitude;
   final double longitude;
@@ -17,6 +17,31 @@ class Location extends Equatable {
 
 class CreateMemoRequest extends Equatable {
   const CreateMemoRequest(this.title, this.content, this.location);
+
+  Map<String, dynamic> toJson() {
+    if (location == null) {
+      return <String, dynamic>{
+        'title': title,
+        'content': content,
+      };
+    }
+    return <String, dynamic>{
+      'title': title,
+      'content': content,
+      'location': location.toJson(),
+    };
+  }
+
+  final String title;
+  final String content;
+  final Location location;
+
+  @override
+  List<Object> get props => <Object>[title, content, location];
+}
+
+class UpdateMemoRequest extends Equatable {
+  const UpdateMemoRequest(this.title, this.content, this.location);
 
   Map<String, dynamic> toJson() {
     if (location == null) {

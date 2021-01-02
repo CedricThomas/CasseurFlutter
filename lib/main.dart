@@ -4,6 +4,7 @@ import 'package:casseurflutter/services/services.dart';
 import 'package:casseurflutter/views/CreateMemo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 import 'views/Home.dart';
 import 'views/Login.dart';
@@ -24,7 +25,8 @@ void main() {
       },
       child: BlocProvider<NotificationBloc>(
         create: (BuildContext context) {
-          final APIService apiService = RepositoryProvider.of<APIService>(context);
+          final APIService apiService =
+              RepositoryProvider.of<APIService>(context);
           return NotificationBloc(apiService);
         },
         child: MyApp(),
@@ -37,7 +39,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       theme: ThemeData(
         // This is the theme of your application.
         //
