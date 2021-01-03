@@ -204,7 +204,7 @@ class APIService {
         'Authorization': 'Bearer $_idToken',
         'Content-type': 'application/json',
       },
-      body: request.toJson(),
+      body: json.encode(request.toJson()),
     );
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
