@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:casseurflutter/exceptions/exceptions.dart';
+import 'package:casseurflutter/models/models.dart';
 import 'package:casseurflutter/services/services.dart';
+import 'package:casseurflutter/views/ViewMemo.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
 
 import 'notification_event.dart';
 import 'notification_state.dart';
@@ -58,7 +63,10 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   }
 
   Future<dynamic> onSelectNotification(String payload) async {
-    // Get.to<>();
+    final Map<String, String> data =
+        Map<String, String>.from(jsonDecode(payload) as Map<String, dynamic>);
+    Get.to<ViewMemo>(ViewMemo(),
+        arguments: MemoViewRequest(data['memo_id']), preventDuplicates: false);
   }
 
   Stream<NotificationState> _mapRegisterNotificationToState(
