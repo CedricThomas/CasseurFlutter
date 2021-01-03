@@ -22,6 +22,15 @@ class MemosLoaded extends MemosState {
   List<Object> get props => <Object>[memos];
 }
 
+class MemosDeletedItem extends MemosState {
+  const MemosDeletedItem(this.id);
+
+  final String id;
+
+  @override
+  List<Object> get props => <Object>[id];
+}
+
 class MemosFailure extends MemosState {
   const MemosFailure({@required this.error});
 

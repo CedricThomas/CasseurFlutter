@@ -58,19 +58,15 @@ class MemoCard extends StatelessWidget {
       child: BlocBuilder<ReminderBloc, ReminderState>(
           buildWhen: (ReminderState prev, ReminderState current) =>
               current is MemoReminder,
-          builder: (BuildContext context, ReminderState rawState) {
-            if (rawState is ReminderFailure) {
+          builder: (BuildContext context, ReminderState state) {
+            if (state is ReminderFailure) {
               Scaffold.of(context).showSnackBar(SnackBar(
-                content: Text(rawState.error),
+                content: Text(state.error),
                 duration: const Duration(seconds: 5),
               ));
             }
-            if (rawState is! MemoReminder) {
-              return Container();
-            }
             final ReminderBloc memoBloc =
                 BlocProvider.of<ReminderBloc>(context);
-            final MemoReminder state = rawState as MemoReminder;
             return GestureDetector(
                 onTap: () {
                   Get.to<ViewMemo>(ViewMemo(),
@@ -96,13 +92,16 @@ class MemoCard extends StatelessWidget {
                                   child: Row(
                                     children: <Widget>[
                                       IconButton(
-                                        icon: state.hasReminder
+                                        icon: state is MemoReminder &&
+                                                state.hasReminder
                                             ? const Icon(Icons.alarm_off)
                                             : const Icon(Icons.alarm_add),
-                                        onPressed: () => state.hasReminder
-                                            ? memoBloc.add(DeleteReminder(
-                                                memo.id, state.reminderId))
-                                            : _createReminder(context),
+                                        onPressed: () =>
+                                            state is MemoReminder &&
+                                                    state.hasReminder
+                                                ? memoBloc.add(DeleteReminder(
+                                                    memo.id, state.reminderId))
+                                                : _createReminder(context),
                                       ),
                                       IconButton(
                                         icon: const Icon(Icons.edit),

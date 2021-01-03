@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:casseurflutter/models/models.dart';
 import 'package:casseurflutter/services/services.dart';
 
 import 'memos_event.dart';
@@ -9,11 +8,9 @@ class MemosBloc extends Bloc<MemosEvent, MemosState> {
   MemosBloc(APIService apiService)
       : assert(apiService != null),
         _apiService = apiService,
-        _memos = List<Memo>.empty(),
         super(MemosInitial());
 
   final APIService _apiService;
-  List<Memo> _memos;
 
   @override
   Stream<MemosState> mapEventToState(MemosEvent event) async* {
@@ -28,8 +25,7 @@ class MemosBloc extends Bloc<MemosEvent, MemosState> {
   Stream<MemosState> _mapFetchMemos(FetchMemos event) async* {
     try {
       yield MemosLoading();
-      _memos = await _apiService.listMemos();
-      yield MemosLoaded(_memos);
+      yield MemosLoaded(await _apiService.listMemos());
     } catch (err) {
       yield MemosFailure(
           error: err.message as String ?? 'An unknown error occured');
@@ -39,8 +35,7 @@ class MemosBloc extends Bloc<MemosEvent, MemosState> {
   Stream<MemosState> _mapDeleteMemo(DeleteMemo event) async* {
     try {
       await _apiService.deleteMemo(event.id);
-      _memos.removeWhere((Memo element) => element.id == event.id);
-      yield MemosLoaded(_memos);
+      yield MemosDeletedItem(event.id);
     } catch (err) {
       yield MemosFailure(
           error: err.message as String ?? 'An unknown error occured');

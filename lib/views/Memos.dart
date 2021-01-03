@@ -15,6 +15,9 @@ class Memos extends StatefulWidget {
 }
 
 class _MemosState extends State<Memos> {
+  List<Memo> _memos;
+  bool _loading = true;
+
   Future<void> _refreshList(MemosBloc memoBloc) async {
     memoBloc.add(FetchMemos());
   }
@@ -25,45 +28,65 @@ class _MemosState extends State<Memos> {
         BlocProvider.of<AuthenticationBloc>(context);
 
     return AuthenticationEnforcer(
-      authenticationBloc: authBloc,
-      child: MemosScaffold(
-        child: BlocBuilder<MemosBloc, MemosState>(
-          builder: (BuildContext context, MemosState state) {
-            final MemosBloc memoBloc = BlocProvider.of<MemosBloc>(context);
-            if (state is MemosLoaded) {
-              return Container(
-                child: RefreshIndicator(
-                  child: ListView.builder(
-                    itemCount: state.memos.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final Memo memo = state.memos[index];
-                      return Dismissible(
-                        key: Key(memo.id),
-                        onDismissed: (DismissDirection direction) {
-                          memoBloc.add(DeleteMemo(memo.id));
-                          Scaffold.of(context).showSnackBar(
-                              const SnackBar(content: Text('Memo deleted')));
+        authenticationBloc: authBloc,
+        child: MemosScaffold(
+          child: BlocListener<MemosBloc, MemosState>(
+            listener: (BuildContext context, MemosState state) {
+              if (state is MemosLoaded) {
+                setState(() {
+                  _memos = state.memos;
+                  _loading = false;
+                });
+              }
+              if (state is MemosLoading) {
+                setState(() {
+                  _loading = true;
+                });
+              }
+              if (state is MemosDeletedItem) {
+                Scaffold.of(context).showSnackBar(
+                    const SnackBar(content: Text('Memo deleted')));
+              }
+            },
+            child: Builder(
+              builder: (BuildContext context) {
+                final MemosBloc memoBloc = BlocProvider.of<MemosBloc>(context);
+                if (!_loading) {
+                  return Container(
+                    child: RefreshIndicator(
+                      child: ListView.builder(
+                        itemCount: _memos.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final Memo memo = _memos[index];
+                          return Dismissible(
+                            key: Key(memo.id),
+                            onDismissed: (DismissDirection direction) {
+                              setState(() {
+                                _memos.removeWhere(
+                                    (Memo item) => item.id == memo.id);
+                                memoBloc.add(DeleteMemo(memo.id));
+                              });
+                            },
+                            child: MemoCard(
+                              memo: memo,
+                              edit: (Memo memo) {},
+                            ),
+                          );
                         },
-                        child: MemoCard(
-                          memo: memo,
-                          edit: (Memo memo) {},
-                        ),
-                      );
-                    },
-                  ),
-                  onRefresh: () => _refreshList(memoBloc),
-                ),
-              );
-            }
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const <Widget>[
-                CircularProgressIndicator(),
-              ],
-            );
-          },
-        ),
-      ),
-    );
+                      ),
+                      onRefresh: () => _refreshList(memoBloc),
+                    ),
+                  );
+                }
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const <Widget>[
+                    CircularProgressIndicator(),
+                  ],
+                );
+              },
+            ),
+          ),
+        ));
   }
 }
