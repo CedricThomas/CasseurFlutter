@@ -110,122 +110,123 @@ class _CreateMemo extends State<CreateMemo> {
             body: Builder(
               builder: (BuildContext context) {
                 return BlocListener<CreateMemoBloc, CreateMemoState>(
-                  listener: (BuildContext context, CreateMemoState state) {
-                    if (state is CreateMemoCreating) {
-                      setState(() {
-                        _isLoading = true;
-                      });
-                    }
-                    if (state is CreateMemoFailure) {
-                      Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text(state.message),
-                        duration: const Duration(seconds: 5),
-                      ));
-                      setState(() {
-                        _isLoading = false;
-                      });
-                    }
-                    if (state is CreateMemoCreated) {
-                      Future<void>.microtask(() => Navigator.pop(context));
-                    }
-                  },
-                  child: SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Column(
-                        children: <Widget>[
-                          TextField(
-                            onChanged: (String newValue) {
-                              setState(() {
-                                _memoTitle = newValue;
-                              });
-                            },
-                            decoration: const InputDecoration(
-                              hintText: 'Memo title',
-                              filled: true,
-                              fillColor: Color(0xFFDBEDFF),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
+                    listener: (BuildContext context, CreateMemoState state) {
+                      if (state is CreateMemoCreating) {
+                        setState(() {
+                          _isLoading = true;
+                        });
+                      }
+                      if (state is CreateMemoFailure) {
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text(state.message),
+                          duration: const Duration(seconds: 5),
+                        ));
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      }
+                      if (state is CreateMemoCreated) {
+                        Future<void>.microtask(() => Navigator.pop(context));
+                      }
+                    },
+                    child: SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: <Widget>[
+                              TextField(
+                                onChanged: (String newValue) {
+                                  setState(() {
+                                    _memoTitle = newValue;
+                                  });
+                                },
+                                decoration: const InputDecoration(
+                                  hintText: 'Memo title',
+                                  filled: true,
+                                  fillColor: Color(0xFFDBEDFF),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.blue),
+                                  ),
+                                ),
                               ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.blue),
+                              Container(
+                                height: 30,
                               ),
-                            ),
+                              TextField(
+                                minLines: 10,
+                                maxLines: 15,
+                                onChanged: (String newValue) {
+                                  setState(() {
+                                    _memoContent = newValue;
+                                  });
+                                },
+                                decoration: const InputDecoration(
+                                  hintText: 'Memo content here',
+                                  filled: true,
+                                  fillColor: Color(0xFFDBEDFF),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10.0)),
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10.0)),
+                                    borderSide: BorderSide(color: Colors.blue),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                height: 30,
+                              ),
+                              ProgressButton(
+                                stateWidgets: const <ButtonState, Widget>{
+                                  ButtonState.idle: Text(
+                                    'Add a geolocation',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  ButtonState.loading: Text(
+                                    'Locating',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  ButtonState.fail: Text(
+                                    'Could not get position',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  ButtonState.success: Text(
+                                    'Geolocation added',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500),
+                                  )
+                                },
+                                stateColors: <ButtonState, Color>{
+                                  ButtonState.idle: Colors.blue,
+                                  ButtonState.loading: Colors.blue.shade300,
+                                  ButtonState.fail: Colors.red.shade300,
+                                  ButtonState.success: Colors.green.shade400,
+                                },
+                                radius: 5.0,
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 10),
+                                onPressed: _onGeolocationAsked,
+                                state: _locationButtonState,
+                              ),
+                            ],
                           ),
-                          Container(
-                            height: 30,
-                          ),
-                          TextField(
-                            minLines: 10,
-                            maxLines: 15,
-                            onChanged: (String newValue) {
-                              setState(() {
-                                _memoContent = newValue;
-                              });
-                            },
-                            decoration: const InputDecoration(
-                              hintText: 'Memo content here',
-                              filled: true,
-                              fillColor: Color(0xFFDBEDFF),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
-                                borderSide: BorderSide(color: Colors.grey),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
-                                borderSide: BorderSide(color: Colors.blue),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            height: 30,
-                          ),
-                          ProgressButton(
-                            stateWidgets: const <ButtonState, Widget>{
-                              ButtonState.idle: Text(
-                                'Add a geolocation',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              ButtonState.loading: Text(
-                                'Locating',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              ButtonState.fail: Text(
-                                'Could not get position',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              ButtonState.success: Text(
-                                'Geolocation added',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500),
-                              )
-                            },
-                            stateColors: <ButtonState, Color>{
-                              ButtonState.idle: Colors.blue,
-                              ButtonState.loading: Colors.blue.shade300,
-                              ButtonState.fail: Colors.red.shade300,
-                              ButtonState.success: Colors.green.shade400,
-                            },
-                            radius: 5.0,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 10),
-                            onPressed: _onGeolocationAsked,
-                            state: _locationButtonState,
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                );
+                    ));
               },
             ),
           ),
