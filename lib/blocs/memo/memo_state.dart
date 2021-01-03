@@ -1,3 +1,4 @@
+import 'package:casseurflutter/models/memo.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
@@ -10,14 +11,13 @@ abstract class MemoState extends Equatable {
 
 class MemoInitial extends MemoState {}
 
-class MemoReminder extends MemoState {
-  const MemoReminder(this.hasReminder, this.reminderId);
+class MemoLoaded extends MemoState {
+  const MemoLoaded(this.memo);
 
-  final bool hasReminder;
-  final String reminderId;
+  final Memo memo;
 
   @override
-  List<Object> get props => <Object>[hasReminder, reminderId];
+  List<Object> get props => <Object>[memo];
 }
 
 class MemoFailure extends MemoState {

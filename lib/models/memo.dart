@@ -82,3 +82,12 @@ class Memo extends Equatable {
   @override
   List<Object> get props => <Object>[id, createdAt, title, content, location];
 }
+
+class MemoViewRequest extends Equatable {
+  const MemoViewRequest(this.id);
+
+  final String id;
+
+  @override
+  List<Object> get props => <Object>[id];
+}

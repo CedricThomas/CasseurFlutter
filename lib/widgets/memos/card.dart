@@ -1,8 +1,10 @@
-import 'package:casseurflutter/blocs/memo/memo.dart';
+import 'package:casseurflutter/blocs/reminder/reminder.dart';
 import 'package:casseurflutter/models/models.dart';
 import 'package:casseurflutter/services/api.dart';
+import 'package:casseurflutter/views/ViewMemo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 class MemoCard extends StatelessWidget {
   const MemoCard({@required this.memo, @required this.edit});
@@ -10,19 +12,19 @@ class MemoCard extends StatelessWidget {
   final Memo memo;
   final void Function(Memo memo) edit;
 
-  Widget _memoBlocProvider(
+  Widget _reminderBlocProvider(
       {@required Widget child, @required BuildContext context}) {
     final APIService apiService = RepositoryProvider.of<APIService>(context);
 
-    return BlocProvider<MemoBloc>(
+    return BlocProvider<ReminderBloc>(
         create: (BuildContext context) =>
-            MemoBloc(apiService)..add(FetchFirstReminder(memo.id)),
+            ReminderBloc(apiService)..add(FetchFirstReminder(memo.id)),
         child: child);
   }
 
   Future<void> _createReminder(BuildContext context) async {
     try {
-      final MemoBloc memoBloc = BlocProvider.of<MemoBloc>(context);
+      final ReminderBloc reminderBloc = BlocProvider.of<ReminderBloc>(context);
       final DateTime date = await showDatePicker(
           context: context,
           initialDate: DateTime.now(),
@@ -40,7 +42,7 @@ class MemoCard extends StatelessWidget {
       }
       final DateTime realTime =
           DateTime(date.year, date.month, date.day, time.hour, time.minute);
-      memoBloc.add(AddReminder(
+      reminderBloc.add(AddReminder(
           memo.id,
           CreateReminderRequest(
               memo.title, 'It\'s time to care about your memo', realTime)));
@@ -51,13 +53,13 @@ class MemoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _memoBlocProvider(
+    return _reminderBlocProvider(
       context: context,
-      child: BlocBuilder<MemoBloc, MemoState>(
-          buildWhen: (MemoState prev, MemoState current) =>
+      child: BlocBuilder<ReminderBloc, ReminderState>(
+          buildWhen: (ReminderState prev, ReminderState current) =>
               current is MemoReminder,
-          builder: (BuildContext context, MemoState rawState) {
-            if (rawState is MemoFailure) {
+          builder: (BuildContext context, ReminderState rawState) {
+            if (rawState is ReminderFailure) {
               Scaffold.of(context).showSnackBar(SnackBar(
                 content: Text(rawState.error),
                 duration: const Duration(seconds: 5),
@@ -66,95 +68,105 @@ class MemoCard extends StatelessWidget {
             if (rawState is! MemoReminder) {
               return Container();
             }
-            final MemoBloc memoBloc = BlocProvider.of<MemoBloc>(context);
+            final ReminderBloc memoBloc =
+                BlocProvider.of<ReminderBloc>(context);
             final MemoReminder state = rawState as MemoReminder;
-            return Container(
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Flexible(
-                              child: Text(
-                                memo.title,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 30.0),
-                              ),
-                            ),
-                            Container(
-                              child: Row(
-                                children: <Widget>[
-                                  IconButton(
-                                    icon: state.hasReminder
-                                        ? const Icon(Icons.alarm_off)
-                                        : const Icon(Icons.alarm_add),
-                                    onPressed: () => state.hasReminder
-                                        ? memoBloc.add(DeleteReminder(
-                                            memo.id, state.reminderId))
-                                        : _createReminder(context),
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.edit),
-                                    onPressed: () => edit(memo),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ]),
-                      Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                          child: Row(children: <Widget>[
-                            Flexible(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Container(
-                                      constraints: const BoxConstraints(
-                                          minHeight: 100,
-                                          minWidth: double.infinity,
-                                          maxHeight: 300),
-                                      child: Text(
-                                        memo.content,
-                                      )),
-                                ],
-                              ),
-                            ),
-                          ])),
-                      Row(
+            return GestureDetector(
+                onTap: () {
+                  Get.to<ViewMemo>(ViewMemo(),
+                      arguments: MemoViewRequest(memo.id));
+                },
+                child: Container(
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
                         children: <Widget>[
-                          if (memo.location != null && memo.location != '')
-                            Container(
-                              constraints: BoxConstraints(
-                                maxWidth:
-                                    MediaQuery.of(context).size.width * 2 / 3,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  const Icon(Icons.location_pin),
-                                  Expanded(
-                                    child: Text(
-                                      memo.location,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 20.0,
-                                        fontStyle: FontStyle.italic,
-                                      ),
-                                    ),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Flexible(
+                                  child: Text(
+                                    memo.title,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(fontSize: 30.0),
                                   ),
-                                ],
-                              ),
-                            ),
+                                ),
+                                Container(
+                                  child: Row(
+                                    children: <Widget>[
+                                      IconButton(
+                                        icon: state.hasReminder
+                                            ? const Icon(Icons.alarm_off)
+                                            : const Icon(Icons.alarm_add),
+                                        onPressed: () => state.hasReminder
+                                            ? memoBloc.add(DeleteReminder(
+                                                memo.id, state.reminderId))
+                                            : _createReminder(context),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.edit),
+                                        onPressed: () => edit(memo),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ]),
+                          Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 16.0),
+                              child: Row(children: <Widget>[
+                                Flexible(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Container(
+                                          constraints: const BoxConstraints(
+                                              minHeight: 100,
+                                              minWidth: double.infinity,
+                                              maxHeight: 300),
+                                          child: Text(
+                                            memo.content,
+                                          )),
+                                    ],
+                                  ),
+                                ),
+                              ])),
+                          Row(
+                            children: <Widget>[
+                              if (memo.location != null && memo.location != '')
+                                Container(
+                                  constraints: BoxConstraints(
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width *
+                                            2 /
+                                            3,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      const Icon(Icons.location_pin),
+                                      Expanded(
+                                        child: Text(
+                                          memo.location,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontSize: 20.0,
+                                            fontStyle: FontStyle.italic,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          )
                         ],
-                      )
-                    ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            );
+                ));
           }),
     );
   }

@@ -15,44 +15,15 @@ class MemoBloc extends Bloc<MemoEvent, MemoState> {
 
   @override
   Stream<MemoState> mapEventToState(MemoEvent event) async* {
-    if (event is FetchFirstReminder) {
-      yield* _mapFetchFirstReminder(event);
-    }
-    if (event is DeleteReminder) {
-      yield* _mapDeleteReminder(event);
-    }
-    if (event is AddReminder) {
-      yield* _mapSetReminder(event);
+    if (event is FetchMemo) {
+      yield* _mapFetchMemo(event);
     }
   }
 
-  Stream<MemoState> _mapFetchFirstReminder(FetchFirstReminder event) async* {
+  Stream<MemoState> _mapFetchMemo(FetchMemo event) async* {
     try {
-      final Reminder reminder =
-          await _apiService.getFirstReminder(event.memoId);
-      yield MemoReminder(
-          reminder != null, reminder != null ? reminder.id : null);
-    } catch (err) {
-      yield MemoFailure(
-          error: err.message as String ?? 'An unknown error occured');
-    }
-  }
-
-  Stream<MemoState> _mapDeleteReminder(DeleteReminder event) async* {
-    try {
-      await _apiService.deleteReminder(event.memoId, event.reminderId);
-      add(FetchFirstReminder(event.memoId));
-    } catch (err) {
-      yield MemoFailure(
-          error: err.message as String ?? 'An unknown error occured');
-    }
-  }
-
-  Stream<MemoState> _mapSetReminder(AddReminder event) async* {
-    try {
-      await _apiService.createReminder(
-          event.memoId, event.reminderCreationRequest);
-      add(FetchFirstReminder(event.memoId));
+      final Memo memo = await _apiService.getMemo(event.memoId);
+      yield MemoLoaded(memo);
     } catch (err) {
       yield MemoFailure(
           error: err.message as String ?? 'An unknown error occured');
