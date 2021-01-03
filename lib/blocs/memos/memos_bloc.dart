@@ -40,6 +40,7 @@ class MemosBloc extends Bloc<MemosEvent, MemosState> {
     try {
       await _apiService.deleteMemo(event.id);
       _memos.removeWhere((Memo element) => element.id == event.id);
+      yield MemosLoaded(_memos);
     } catch (err) {
       yield MemosFailure(
           error: err.message as String ?? 'An unknown error occured');

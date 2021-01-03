@@ -246,7 +246,7 @@ class APIService {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return Memo.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('Failed to update memo');
+      throw Exception('Failed to fetch memo');
     }
   }
 
@@ -278,7 +278,10 @@ class APIService {
     final String url = '$API_URL/memo';
     final http.Response response = await http.post(
       url,
-      headers: <String, String>{'Authorization': 'Bearer $_idToken', 'Content-type' : 'application/json'},
+      headers: <String, String>{
+        'Authorization': 'Bearer $_idToken',
+        'Content-type': 'application/json'
+      },
       body: json.encode(memoToCreate),
     );
 
@@ -286,6 +289,71 @@ class APIService {
       return Memo.fromJson(jsonDecode(response.body));
     } else if (response.statusCode == 400) {
       throw Exception('Invalid memo');
+    } else {
+      throw Exception('Failed to create memo');
+    }
+  }
+
+  Future<void> deleteReminder(String memoId, String reminderId) async {
+    if (!(await tryToGetValidCredentials())) {
+      throw const AuthenticationException('Not logged in');
+    }
+    final String url = '$API_URL/memo/$memoId/reminder/$reminderId';
+    final http.Response response = await http.delete(
+      url,
+      headers: <String, String>{
+        'Authorization': 'Bearer $_idToken',
+      },
+    );
+    if (response.statusCode >= 300 || response.statusCode == 0) {
+      throw Exception('Failed to delete memo');
+    }
+  }
+
+  Future<Reminder> getFirstReminder(String memoId) async {
+    if (!(await tryToGetValidCredentials())) {
+      throw const AuthenticationException('Not logged in');
+    }
+    final String url = '$API_URL/memo/$memoId/reminder';
+    final http.Response response = await http.get(
+      url,
+      headers: <String, String>{
+        'Authorization': 'Bearer $_idToken',
+      },
+    );
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final List<dynamic> i = json.decode(response.body) as List<dynamic>;
+      final List<Reminder> items = List<Reminder>.from(i
+          .map<Reminder>((dynamic model) => Reminder.fromJson(model))
+          .where((Reminder i) => !i.triggered));
+      if (items.isNotEmpty) {
+        return items[0];
+      }
+      return null;
+    } else {
+      throw Exception('Failed to fetch reminder');
+    }
+  }
+
+  Future<Reminder> createReminder(
+      String memoId, CreateReminderRequest reminderToCreate) async {
+    http.Client();
+    if (!(await tryToGetValidCredentials())) {
+      throw const AuthenticationException('Not logged in');
+    }
+    final String url = '$API_URL/memo/$memoId/reminder';
+    final http.Response response = await http.post(
+      url,
+      headers: <String, String>{
+        'Authorization': 'Bearer $_idToken',
+        'Content-type': 'application/json'
+      },
+      body: json.encode(reminderToCreate),
+    );
+    if (response.statusCode < 400 && response.statusCode != 0) {
+      return Reminder.fromJson(jsonDecode(response.body));
+    } else if (response.statusCode == 400) {
+      throw Exception('Invalid reminder');
     } else {
       throw Exception('Failed to create memo');
     }
