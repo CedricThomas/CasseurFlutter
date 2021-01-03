@@ -3,7 +3,7 @@ import 'package:casseurflutter/blocs/login/login.dart';
 import 'package:casseurflutter/services/services.dart';
 import 'package:casseurflutter/widgets/login/avatar.dart';
 import 'package:casseurflutter/widgets/login/button.dart';
-import 'package:casseurflutter/widgets/scaffold/default.dart';
+import 'package:casseurflutter/widgets/scaffold/appbar/title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,24 +42,30 @@ class _LoginState extends State<Login> {
         builder: (BuildContext context, LoginState state) {
           final LoginBloc loginBloc = BlocProvider.of<LoginBloc>(context);
 
-          return DefaultScaffold(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  width: MediaQuery.of(context).size.width / 2,
-                  child: LoginAvatar(),
-                ),
-                const SizedBox(height: 300),
-                Container(
-                  width: MediaQuery.of(context).size.width * 4 / 5,
-                  child: LoginButton(
-                    onPressed: () {
-                      loginBloc.add(LoginInWithAuth0());
-                    },
+          return Scaffold(
+            appBar: AppBar(
+              title: AppBarTitle(),
+            ),
+            body: Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    width: MediaQuery.of(context).size.width / 2,
+                    child: LoginAvatar(),
                   ),
-                )
-              ],
+                  const SizedBox(height: 300),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 4 / 5,
+                    child: LoginButton(
+                      onPressed: () {
+                        loginBloc.add(LoginInWithAuth0());
+                      },
+                    ),
+                  )
+                ],
+              ),
+              constraints: const BoxConstraints(minWidth: double.infinity),
             ),
           );
         },

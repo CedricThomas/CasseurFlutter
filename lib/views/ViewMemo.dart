@@ -48,10 +48,8 @@ class _ViewMemo extends State<ViewMemo> {
                   ),
                 Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Expanded(
-                      child: Text(
-                        state.memo.content,
-                      ),
+                    child: Text(
+                      state.memo.content,
                     )),
               ],
             ),
