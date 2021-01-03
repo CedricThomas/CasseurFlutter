@@ -1,10 +1,14 @@
-# casseurflutter
+# CasseurFlutter
 
 A note application
 
 ## Getting Started
 
-This use [Auth0](https://auth0.com/) for the users managements and a custom [GO API](https://github.com/CedricThomas/22h31-FaisLesBacks) to manage memos and reminders.
+This application use [Auth0](https://auth0.com/) for the users management, [FCM](https://firebase.google.com/docs/cloud-messaging) for notifications and a custom [GO API](https://github.com/CedricThomas/22h31-FaisLesBacks) to manage memos and reminders.
+
+```
+flutter run
+```
 
 ## Configuration
 
