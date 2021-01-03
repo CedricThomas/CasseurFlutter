@@ -5,7 +5,7 @@ import 'package:casseurflutter/blocs/home/home_state.dart';
 import 'package:casseurflutter/blocs/notification/notification.dart';
 import 'package:casseurflutter/views/Login.dart';
 import 'package:casseurflutter/views/Memos.dart';
-import 'package:casseurflutter/widgets/scaffold/default.dart';
+import 'package:casseurflutter/widgets/scaffold/appbar/title.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,74 +32,82 @@ class _HomeState extends State<Home> {
         BlocProvider.of<NotificationBloc>(context);
 
     return BlocProvider<HomeBloc>(
-        create: (BuildContext context) =>
-            HomeBloc(notificationBloc)..add(HomeLoaded()),
-        child: MultiBlocListener(
-          listeners: <BlocListener<Bloc<Equatable, Equatable>, Equatable>>[
-            BlocListener<AuthenticationBloc, AuthenticationState>(
-              listener: (BuildContext context, AuthenticationState state) {
-                final HomeBloc homeBloc = BlocProvider.of<HomeBloc>(context);
-                if (state is AuthenticationAuthenticated) {
-                  homeBloc.add(
-                      const HomeAuthenticationCheckEnd(authenticated: true));
-                  notificationBloc.add(RegisterNotification());
-                } else if (state is AuthenticationNotAuthenticated) {
-                  homeBloc.add(
-                      const HomeAuthenticationCheckEnd(authenticated: false));
-                }
-              },
-            ),
-            BlocListener<NotificationBloc, NotificationState>(
-                listener: (BuildContext context, NotificationState state) {
+      create: (BuildContext context) =>
+          HomeBloc(notificationBloc)..add(HomeLoaded()),
+      child: MultiBlocListener(
+        listeners: <BlocListener<Bloc<Equatable, Equatable>, Equatable>>[
+          BlocListener<AuthenticationBloc, AuthenticationState>(
+            listener: (BuildContext context, AuthenticationState state) {
               final HomeBloc homeBloc = BlocProvider.of<HomeBloc>(context);
-              if (state is NotificationRegistered) {
-                homeBloc.add(HomeNotificationCheckEnd());
-              } else if (state is NotificationFailure) {
-                homeBloc.add(HomeDeclareFailure(message: state.error));
-              } else if (state is NotificationRefused) {
-                homeBloc.add(HomeNotificationCheckEnd());
+              if (state is AuthenticationAuthenticated) {
+                homeBloc
+                    .add(const HomeAuthenticationCheckEnd(authenticated: true));
+                notificationBloc.add(RegisterNotification());
+              } else if (state is AuthenticationNotAuthenticated) {
+                homeBloc.add(
+                    const HomeAuthenticationCheckEnd(authenticated: false));
               }
-            }),
-            BlocListener<HomeBloc, HomeState>(
-              listener: (BuildContext context, HomeState state) {
-                if (state is HomeFirebaseInitialized) {
-                  authenticationBloc.add(HomeReady());
-                  setState(() {
-                    isFirebaseInitialized = true;
-                    validateHome(context);
-                  });
-                } else if (state is HomeAuthenticated) {
-                  setState(() {
-                    isLoggedIn = true;
-                    validateHome(context);
-                  });
-                } else if (state is HomeNotAuthenticated) {
-                  setState(() {
-                    isLoggedIn = false;
-                    validateHome(context);
-                  });
-                } else if (state is HomeNotificationRegistered) {
-                  setState(() {
-                    isNotificationRegistered = true;
-                    validateHome(context);
-                  });
-                } else if (state is HomeFailure) {
-                  setState(() {
-                    errorMessage = state.error;
-                  });
-                }
-              },
-            ),
-          ],
-          child: DefaultScaffold(
-              child: Center(
-                  child: errorMessage != null
-                      ? Text(
-                          errorMessage,
-                          textDirection: TextDirection.ltr,
-                        )
-                      : const CircularProgressIndicator())),
-        ));
+            },
+          ),
+          BlocListener<NotificationBloc, NotificationState>(
+              listener: (BuildContext context, NotificationState state) {
+            final HomeBloc homeBloc = BlocProvider.of<HomeBloc>(context);
+            if (state is NotificationRegistered) {
+              homeBloc.add(HomeNotificationCheckEnd());
+            } else if (state is NotificationFailure) {
+              homeBloc.add(HomeDeclareFailure(message: state.error));
+            } else if (state is NotificationRefused) {
+              homeBloc.add(HomeNotificationCheckEnd());
+            }
+          }),
+          BlocListener<HomeBloc, HomeState>(
+            listener: (BuildContext context, HomeState state) {
+              if (state is HomeFirebaseInitialized) {
+                authenticationBloc.add(HomeReady());
+                setState(() {
+                  isFirebaseInitialized = true;
+                  validateHome(context);
+                });
+              } else if (state is HomeAuthenticated) {
+                setState(() {
+                  isLoggedIn = true;
+                  validateHome(context);
+                });
+              } else if (state is HomeNotAuthenticated) {
+                setState(() {
+                  isLoggedIn = false;
+                  validateHome(context);
+                });
+              } else if (state is HomeNotificationRegistered) {
+                setState(() {
+                  isNotificationRegistered = true;
+                  validateHome(context);
+                });
+              } else if (state is HomeFailure) {
+                setState(() {
+                  errorMessage = state.error;
+                });
+              }
+            },
+          ),
+        ],
+        child: Scaffold(
+          appBar: AppBar(
+            title: AppBarTitle(),
+          ),
+          body: Container(
+            child: Center(
+                child: errorMessage != null
+                    ? Text(
+                        errorMessage,
+                        textDirection: TextDirection.ltr,
+                      )
+                    : const CircularProgressIndicator()),
+            constraints: const BoxConstraints(minWidth: double.infinity),
+          ),
+        ),
+      ),
+    );
   }
 
   void validateHome(BuildContext context) {
