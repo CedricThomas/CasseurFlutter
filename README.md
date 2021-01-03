@@ -10,6 +10,13 @@ This application use [Auth0](https://auth0.com/) for the users management, [FCM]
 flutter run
 ```
 
+To build or run in release the apk, add the "no-shrink" option (the shrinking is broken due to a dependencie):
+```
+flutter build apk --release --no-shrink
+```
+
+To generate the `key.properties` file use to build the application in release follow this [guide](https://flutter.dev/docs/deployment/android)
+
 ## Configuration
 
 This application can be configured in the file `lib/constants.dart`:
